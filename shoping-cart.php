@@ -1,29 +1,14 @@
 <?php
-// // Include the database connection file
-// include ('php/conn.php');
-
-// // session_start();
-// if (!isset($_SESSION['user_id'])) {
-// 	// Redirect the user to the login page or show an error message
-// 	header('Location: login.php');
-// 	exit;
-// }
-
-// $user_id = $_SESSION['user_id'];
-// $query = "SELECT c.product_id, c.date_added, p.product_name, p.product_price, p.img1
-//           FROM cart c
-//           INNER JOIN products p ON c.product_id = p.product_id
-//           WHERE c.user_id = :user_id";
-// $stmt = $pdo->prepare($query);
-// $stmt->bindParam(':user_id', $user_id);
-// $stmt->execute();
-// $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-?>
-
-<?php
 // Include the database connection file
-include ('php/cart-wishlist-notification.php');
-include ('php/conn.php');
+include('php/cart-wishlist-notification.php');
+include('php/conn.php');
+require('razorpay-php/Razorpay.php');
+use Razorpay\Api\Api;
+
+$api_key = 'rzp_test_8k9Y3Mmk6y9sy0';
+$api_secret = 'cgbCQ1yvbRMK3QM9z2jPhf0G';
+
+$api = new Api($api_key, $api_secret);
 
 // Check if user is logged in (user_id should be set in the session)
 // session_start();
@@ -450,23 +435,32 @@ $default_product = empty($cart_products) ? null : $cart_products[0];
 								</div>
 							</div>
 							<div class="flex-w flex-t p-b-13" id="address-block">
-								<div class="size-208 w-full-ssm"><span class="stext-110 cl2">Address:</span></div>
+								<div class="size-208 w-full-ssm"><span class="stext-110 cl2">Address :</span></div>
 								<div class="size-209 p-r-18 p-r-0-sm w-full-ssm">
 									<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="address"
 										id="address" placeholder="Enter your address" required>
 								</div>
 							</div>
 							<div class="flex-w flex-t p-b-13" id="message-block">
-								<div class="size-208 w-full-ssm"><span class="stext-110 cl2">Message:</span></div>
+								<div class="size-208 w-full-ssm">
+									<span class="stext-110 cl2">Pincode :</span>
+								</div>
 								<div class="size-209 p-r-18 p-r-0-sm w-full-ssm">
-									<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="message"
-										id="message" placeholder="Enter your message" required>
+									<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="number" name="pincode"
+										id="pincode" placeholder="Enter your pincode" required maxlength="6">
+								</div>
+							</div>
+							<div class="flex-w flex-t p-b-13">
+								<div class="size-208 w-full-ssm"><span class="stext-110 cl2">Payment Method:</span></div>
+								<div class="size-209 p-r-18 p-r-0-sm w-full-ssm">
+									<select class="stext-111 cl8 plh3 size-111 p-lr-15" id="payment-method" required>
+										<option value="online">Online Payment</option>
+										<option value="cod">Cash on Delivery</option>
+									</select>
 								</div>
 							</div>
 							<button class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer"
-								onclick="sendBuyRequest(document.getElementById('selected-product-id').value, <?php echo $default_product['product_price'] - 20; ?>)">Send
-								Buy
-								Request</button>
+								onclick="processPurchase()">Place Order</button>
 							<input type="hidden" id="selected-product-id"
 								value="<?php echo $default_product['product_id']; ?>">
 						<?php else: ?>
@@ -474,6 +468,9 @@ $default_product = empty($cart_products) ? null : $cart_products[0];
 						<?php endif; ?>
 					</div>
 				</div>
+
+
+
 			</div>
 		</div>
 
@@ -602,6 +599,7 @@ $default_product = empty($cart_products) ? null : $cart_products[0];
 	</script>
 
 	<script>
+
 		// Function to increase count and update data-notify attribute
 		function increaseCount(elementId) {
 			console.log("increase func called");
@@ -622,6 +620,147 @@ $default_product = empty($cart_products) ? null : $cart_products[0];
 
 	</script>
 
+	<script>
+
+		function processPurchase() {
+			const productId = document.getElementById('selected-product-id').value;
+			const totalPrice = parseFloat(document.getElementById('selected-product-total').innerText);
+			const addressField = document.getElementById('address');
+			const pincode = document.getElementById('pincode').value.trim();
+			const paymentMethod = document.getElementById('payment-method').value;
+			const paymentMode = document.querySelector('input[name="payment_mode"]:checked')?.value; // Ensure that the payment mode is selected
+
+			// Validate address, pincode, and payment mode fields
+			if (!addressField || !addressField.value.trim() || pincode.length !== 6) {
+				swal("Error", "Please enter a valid address and a 6-digit pincode", "error");
+				return;
+			}
+
+			const address = addressField.value.trim();
+
+			// Check for payment method and process accordingly
+			if (paymentMethod === 'online') {
+				buyProduct(productId, totalPrice);
+				orderProduct(productId, address, pincode, totalPrice, 'online')
+			} else if (paymentMethod === 'cod') {
+				orderProduct(productId, address, pincode, totalPrice, 'cod');
+			}
+		}
+
+		function orderProduct(productId, address, pincode, totalPrice, paymentMode) {
+			fetch('php/create_order.php', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				},
+				body: `product_id=${productId}&address=${encodeURIComponent(address)}&total_price=${totalPrice}&pincode=${encodeURIComponent(pincode)}&payment_mode=${encodeURIComponent(paymentMode)}`
+			})
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('Network response was not ok');
+					}
+					return response.json();
+				})
+				.then(data => {
+					if (data.success) {
+						swal("Order Placed", data.message, "success");
+					} else {
+						swal("Failed", data.message, "error");
+					}
+				})
+				.catch(error => {
+					swal("Error", "An error occurred. Please try again.", "error");
+				});
+		}
+
+		function cashOnDelivery(productId, price) {
+			// Simple function to handle Cash on Delivery logic
+			alert('Order placed with Cash on Delivery. Product ID: ' + productId + ', Price: ' + price + '₹');
+			// Implement further backend logic to handle COD orders here
+		}
+
+		function buyProduct(productId, productPrice) {
+
+			// Send product data to payment_index.php using fetch
+			fetch('payment_index.php', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					type: 'product',
+					productId: productId,
+					price: productPrice
+				})
+			})
+				.then(response => response.json())
+				.then(data => {
+					console.log('Payment response:', data);
+					if (data.orderId) {
+						startPayment(data.orderId, productPrice);
+					} else {
+						console.error('Failed to create order. Please try again.');
+					}
+				})
+				.catch(error => {
+					console.error('Error in fetch request:', error);
+				});
+		}
+
+		function startPayment(orderId, price) {
+			const api_key = 'rzp_test_8k9Y3Mmk6y9sy0';  // Make sure to use your Razorpay API key
+
+			var options = {
+				key: api_key,
+				amount: price * 100, // Convert the price to paise (100 paise = 1 INR)
+				currency: 'INR',
+				name: 'Your Company Name',
+				description: 'Payment for your order',
+				image: 'https://cdn.razorpay.com/logos/GhRQcyean79PqE_medium.png',
+				order_id: orderId,
+				theme: {
+					color: '#738276'
+				},
+				callback_url: 'http://localhost/StudentMart/payment_success.php'
+			};
+
+			var rzp = new Razorpay(options);
+			rzp.open();
+		}
+
+
+		// function sendBuyRequest(address, pincodeNo, paymentMode) {
+
+
+		// 	console.log("order details:", address, pincodeNo, paymentMode);
+
+		// 	fetch('create_order.php', {
+		// 		method: 'POST',
+		// 		headers: {
+		// 			'Content-Type': 'application/x-www-form-urlencoded'
+		// 		},
+		// 		body: `product_id=${productId}&address=${encodeURIComponent(address)}&total_price=${totalPrice}&pincode=${encodeURIComponent(pincodeNo)}&payment_mode=${encodeURIComponent(paymentMode)}`
+		// 	})
+		// 		.then(response => {
+		// 			if (!response.ok) {
+		// 				throw new Error('Network response was not ok');
+		// 			}
+		// 			return response.json();
+		// 		})
+		// 		.then(data => {
+		// 			if (data.success) {
+		// 				swal("Order Placed", data.message, "success");
+		// 			} else {
+		// 				swal("Failed", data.message, "error");
+		// 			}
+		// 		})
+		// 		.catch(error => {
+		// 			swal("Error", "An error occurred. Please try again.", "error");
+		// 		});
+		// }
+
+	</script>
+
 	<script src="js/main.js"></script>
 	<script src="js/request_product.js"></script>
 	<script src="js/whishlist.js"></script>
@@ -629,6 +768,7 @@ $default_product = empty($cart_products) ? null : $cart_products[0];
 	<script src="js/login_logout.js"></script>
 	<script src="js/shopping_cart_functions.js"></script>
 
+	<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script src="vendor/sweetalert/sweetalert.min.js"></script>
 </body>

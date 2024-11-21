@@ -7,43 +7,46 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-$user_id = $_SESSION['user_id'];
-
 try {
+    // Modified query to fetch all notifications without filtering by seller_id
     $query = "
-        SELECT 
-            n.notification_id,
-            n.seller_id,
-            n.buyer_id,
-            n.product_id,
-            n.notification_date,
-            n.notification_type,
-            n.is_read,
-            p.product_name,
-            p.product_description,
-            p.img1 AS product_image,
-            u.fname AS buyer_fname,
-            u.lname AS buyer_lname,
-            u.phone AS buyer_phone,
-            o.address
-        FROM 
-            notifications n
-        JOIN 
-            products as p ON n.product_id = p.product_id
-        JOIN 
-            user u ON n.buyer_id = u.user_id
-        JOIN 
-            orders o ON n.product_id = o.product_id AND n.buyer_id = o.buyer_id
-        WHERE 
-            n.seller_id = :user_id
-        ORDER BY 
-            n.notification_date DESC;
-    ";
+    SELECT 
+        n.notification_id,
+        n.seller_id,
+        n.buyer_id,
+        n.product_id,
+        n.notification_date,
+        n.notification_type,
+        n.is_read,
+        p.product_name,
+        p.product_description,
+        p.img1 AS product_image,
+        u.fname AS buyer_fname,
+        u.lname AS buyer_lname,
+        u.phone AS buyer_phone,
+        o.address,
+        o.pincode
+    FROM 
+        notifications n
+    JOIN 
+        products p ON n.product_id = p.product_id
+    JOIN 
+        user u ON n.buyer_id = u.user_id
+    JOIN 
+        orders o ON n.product_id = o.product_id AND n.buyer_id = o.buyer_id
+    GROUP BY
+        n.notification_id  -- Grouping by notification_id ensures no duplicates
+    ORDER BY 
+        n.notification_date DESC;
+";
+
+
 
     $stmt = $pdo->prepare($query);
-    $stmt->bindParam(':user_id', $user_id);
+    // No binding required since there's no :user_id parameter anymore
     $stmt->execute();
     $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
     if ($notifications) {
         echo '<div class="container">';
         echo '<h2 class="text-center mb-4">Notifications</h2>';
@@ -71,7 +74,7 @@ try {
             echo '</div>';
             echo '</div>';
 
-            // Modal code remains the same as previously provided
+            // Modal code remains the same
             echo '<div class="modal fade" id="detailsModal_' . $notification['notification_id'] . '" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel_' . $notification['notification_id'] . '" aria-hidden="true">';
             echo '<div class="modal-dialog modal-dialog-centered modal-lg" role="document">';
             echo '<div class="modal-content">';
@@ -93,12 +96,13 @@ try {
             echo '<p><strong>Buyer Name:</strong> ' . htmlspecialchars($notification['buyer_fname']) . ' ' . htmlspecialchars($notification['buyer_lname']) . '</p>';
             echo '<p><strong>Buyer Phone:</strong> ' . htmlspecialchars($notification['buyer_phone']) . '</p>';
             echo '<p><strong>Address:</strong> ' . htmlspecialchars($notification['address']) . '</p>';
+            echo '<p><strong>Pincode:</strong> ' . htmlspecialchars($notification['pincode']) . '</p>';
             echo '</div>';
             echo '</div>';
             echo '</div>';
             echo '<div class="modal-footer">';
             echo '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>';
-            echo '<a href="https://api.whatsapp.com/send?phone=' . htmlspecialchars($notification['buyer_phone']) . '" class="btn btn-success">Chat with Buyer</a>';
+            // echo '<a href="https://api.whatsapp.com/send?phone=' . htmlspecialchars($notification['buyer_phone']) . '" class="btn btn-success">Chat with Buyer</a>';
             echo '</div>';
             echo '</div>';
             echo '</div>';

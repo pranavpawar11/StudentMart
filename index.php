@@ -2,7 +2,7 @@
 
 session_start();
 
-include ('php/cart-wishlist-notification.php');
+include('php/cart-wishlist-notification.php');
 // Check if the user is logged in
 if (!isset($_SESSION["user_id"])) {
 	// If not logged in, redirect to the login page
@@ -10,7 +10,6 @@ if (!isset($_SESSION["user_id"])) {
 	exit;
 }
 
-// User is logged in, display the homepage
 ?>
 
 
@@ -152,7 +151,10 @@ if (!isset($_SESSION["user_id"])) {
 								<a href="index.php">Home</a>
 							</li>
 							<li>
-								<a href="product.php">Shop</a>
+								<a href="product.php">Books</a>
+							</li>
+							<li>
+								<a href="shop_pdf.php">PDFs</a>
 							</li>
 
 							<li>
@@ -160,8 +162,12 @@ if (!isset($_SESSION["user_id"])) {
 							</li>
 
 							<li>
-								<a href="dashboard.php">Dashboard</a>
+								<a href="my-orders.php">My Orders</a>
 							</li>
+
+							<!-- <li>
+								<a href="dashboard.php">Dashboard</a>
+							</li> -->
 
 						</ul>
 					</div>
@@ -250,16 +256,16 @@ if (!isset($_SESSION["user_id"])) {
 					<a href="index.php">Home</a>
 				</li>
 				<li>
-					<a href="product.php">Shop</a>
+					<a href="shop_pdf.php">Shop</a>
 				</li>
 
 				<li>
 					<a href="shoping-cart.php">Cart</a>
 				</li>
 
-				<li>
+				<!-- <li>
 					<a href="dashboard.php">Dashboard</a>
-				</li>
+				</li> -->
 
 
 			</ul>
@@ -365,7 +371,7 @@ if (!isset($_SESSION["user_id"])) {
 							<div class="layer-slick1 animated visible-false" data-appear="lightSpeedIn"
 								data-delay="800">
 								<h2 class="ltext-201 cl2 p-t-19 p-b-43 respon1">
-									Latest Electronics
+									Electronics
 								</h2>
 							</div>
 
@@ -556,7 +562,7 @@ if (!isset($_SESSION["user_id"])) {
 				<ul>
 					<li><a href="">Home</a></li>
 					<li><a href="#">Buy</a></li>
-					<li><a href="dashboard.php">Sell</a></li>
+					<!-- <li><a href="dashboard.php">Sell</a></li> -->
 					<li><a href="#">Categories</a></li>
 					<li><a href="#">How It Works</a></li>
 				</ul>

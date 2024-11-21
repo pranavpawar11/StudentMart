@@ -19,13 +19,11 @@ try {
                 END AS wishlist_icon
                 FROM products p
                 LEFT JOIN wishlist w ON p.product_id = w.product_id 
-                WHERE p.product_status = 'available' AND p.seller_id != :current_user_id
+                WHERE p.product_status = 'available' 
                 ORDER BY RAND()";
 
         // Prepare the statement
         $stmt = $pdo->prepare($sql);
-        // Bind the user_id parameter
-        $stmt->bindParam(':current_user_id', $current_user_id, PDO::PARAM_INT);
         // Execute the statement
         $stmt->execute();
     } else {

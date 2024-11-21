@@ -12,45 +12,7 @@ function selectToBuy(productId, productName, productPrice, productImg, productDe
     document.getElementById('message-block').style.display = 'block'; // Ensure message block is shown
 }
 
-function sendBuyRequest() {
-    const productId = document.getElementById('selected-product-id').value;
-    const totalPrice = parseFloat(document.getElementById('selected-product-total').innerText);
-    const addressField = document.getElementById('address');
-    const messageField = document.getElementById('message');
 
-    // Validate address and message fields
-    if (!addressField || !messageField || !addressField.value.trim() || !messageField.value.trim()) {
-        swal("Error", "Please enter both address and message", "error");
-        return;
-    }
-
-    const address = addressField.value.trim();
-    const message = messageField.value.trim();
-
-    fetch('php/add_request.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: `product_id=${productId}&address=${encodeURIComponent(address)}&total_price=${totalPrice}&message=${encodeURIComponent(message)}`
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                swal("Order Placed", data.message, "success");
-            } else {
-                swal("Failed", data.message, "error");
-            }
-        })
-        .catch(error => {
-            swal("Error", "An error occurred. Please try again.", "error");
-        });
-}
 
 document.querySelectorAll('.js-remove-from-cart').forEach(function (button) {
     button.addEventListener('click', function () {
@@ -63,17 +25,17 @@ document.querySelectorAll('.js-remove-from-cart').forEach(function (button) {
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `product_id=${productId}`
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Remove the product row from the table
-                    productRow.remove();
-                    swal(productName, "is removed from the cart!", "success");
-                } else {
-                    swal("Error", "Failed to remove product from cart.", "error");
-                }
-            })
-            .catch(error => console.error('Error:', error));
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Remove the product row from the table
+                        productRow.remove();
+                        swal(productName, "is removed from the cart!", "success");
+                    } else {
+                        swal("Error", "Failed to remove product from cart.", "error");
+                    }
+                })
+                .catch(error => console.error('Error:', error));
         }
     });
 });

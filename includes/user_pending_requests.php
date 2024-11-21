@@ -12,17 +12,16 @@ $user_id = $_SESSION['user_id'];
 try {
     $query = "
         SELECT 
-            r.request_id,
-            r.order_id,
-            r.request_date,
-            r.status AS request_status,
-            r.message,
+            o.order_id,
             o.product_id,
             o.buyer_id,
             o.seller_id,
             o.status AS order_status,
+            o.payment_mode,
             o.order_date,
+            o.complete_date,
             o.address,
+            o.pincode,
             o.total_price,
             p.product_name,
             p.product_description,
@@ -30,17 +29,15 @@ try {
             p.img1 AS product_image,
             u.phone AS buyer_phone
         FROM 
-            requests r
-        JOIN 
-            orders o ON r.order_id = o.order_id
+            orders o
         JOIN 
             products p ON o.product_id = p.product_id
         JOIN 
             user u ON o.buyer_id = u.user_id
         WHERE 
-            o.seller_id = :user_id AND r.status = 'pending'
+            o.seller_id = :user_id AND o.status = 'pending'
         ORDER BY 
-            r.request_date DESC;
+            o.order_date DESC;
     ";
 
     $stmt = $pdo->prepare($query);
@@ -50,31 +47,31 @@ try {
 
     if ($results) {
         echo '<div class="container">';
-        echo '<h2 class="text-center mb-4">Pending Requests</h2>';
+        echo '<h2 class="text-center mb-4">Pending Orders</h2>';
         echo '<div class="row">';
 
-        foreach ($results as $request) {
+        foreach ($results as $order) {
             echo '<div class="col-md-4 mb-4">';
             echo '<div class="card border-light shadow">';
-            echo '<img src="' . htmlspecialchars($request['product_image']) . '" class="card-img-top" alt="Product Image" style="height: 200px; object-fit: cover;">';
+            echo '<img src="' . htmlspecialchars($order['product_image']) . '" class="card-img-top" alt="Product Image" style="height: 200px; object-fit: cover;">';
             echo '<div class="card-body">';
-            echo '<h5 class="card-title">' . htmlspecialchars($request['product_name']) . '</h5>';
-            echo '<p class="card-text">' . htmlspecialchars($request['product_description']) . '</p>';
+            echo '<h5 class="card-title">' . htmlspecialchars($order['product_name']) . '</h5>';
+            echo '<p class="card-text">' . htmlspecialchars($order['product_description']) . '</p>';
             echo '<div class="d-flex justify-content-between align-items-center">';
-            echo '<button class="btn btn-success approve-request" data-request-id="' . $request['request_id'] . '">Approve</button>';
-            echo '<button class="btn btn-danger decline-request" data-request-id="' . $request['request_id'] . '">Decline</button>';
-            echo '<button class="btn btn-primary view-more" data-toggle="modal" data-target="#detailsModal_' . $request['request_id'] . '">View More</button>';
+            echo '<button class="btn btn-success approve-order" data-order-id="' . $order['order_id'] . '" onclick="approveRequest(' . $order['order_id'] . ')">Approve</button>';
+            echo '<button class="btn btn-primary view-more" data-toggle="modal" data-target="#detailsModal_' . $order['order_id'] . '">View More</button>';
+            echo '<button class="btn btn-warning complete-order" data-order-id="' . $order['order_id'] . '" onclick="completeOrder(' . $order['order_id'] . ')">Complete</button>';
             echo '</div>';
             echo '</div>';
             echo '</div>';
             echo '</div>';
 
-            // Modal for each request
-            echo '<div class="modal fade" id="detailsModal_' . $request['request_id'] . '" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel_' . $request['request_id'] . '" aria-hidden="true">';
+            // Modal for each order
+            echo '<div class="modal fade" id="detailsModal_' . $order['order_id'] . '" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel_' . $order['order_id'] . '" aria-hidden="true">';
             echo '<div class="modal-dialog modal-dialog-centered modal-lg" role="document">';
             echo '<div class="modal-content">';
             echo '<div class="modal-header bg-light">';
-            echo '<h5 class="modal-title" id="detailsModalLabel_' . $request['request_id'] . '">' . htmlspecialchars($request['product_name']) . '</h5>';
+            echo '<h5 class="modal-title" id="detailsModalLabel_' . $order['order_id'] . '">' . htmlspecialchars($order['product_name']) . '</h5>';
             echo '<button type="button" class="close" data-dismiss="modal" aria-label="Close">';
             echo '<span aria-hidden="true">&times;</span>';
             echo '</button>';
@@ -82,22 +79,28 @@ try {
             echo '<div class="modal-body">';
             echo '<div class="row">';
             echo '<div class="col-md-5">';
-            echo '<img src="' . htmlspecialchars($request['product_image']) . '" class="img-fluid" alt="Product Image">';
+            echo '<img src="' . htmlspecialchars($order['product_image']) . '" class="img-fluid" alt="Product Image">';
             echo '</div>';
             echo '<div class="col-md-7">';
-            echo '<p><strong>Product Description:</strong><br>' . htmlspecialchars($request['product_description']) . '</p>';
-            echo '<p><strong>Request Message:</strong><br>' . htmlspecialchars($request['message']) . '</p>';
-            echo '<p><strong>Order Date:</strong> ' . htmlspecialchars($request['order_date']) . '</p>';
-            echo '<p><strong>Total Price: </strong> ₹ ' . htmlspecialchars($request['total_price']) . '</p>';
-            echo '<p><strong>Buyer Address:</strong> ' . htmlspecialchars($request['address']) . '</p>';
-            echo '<p><strong>Buyer Phone:</strong> ' . htmlspecialchars($request['buyer_phone']) . '</p>';
+            echo '<p><strong>Product Description:</strong><br>' . htmlspecialchars($order['product_description']) . '</p>';
+            echo '<p><strong>Order Date:</strong> ' . htmlspecialchars($order['order_date']) . '</p>';
+            echo '<p><strong>Total Price: </strong> ₹ ' . htmlspecialchars($order['total_price']) . '</p>';
+            echo '<p><strong>Buyer Address:</strong> ' . htmlspecialchars($order['address']) . '</p>';
+            echo '<p><strong>Pincode:</strong> ' . htmlspecialchars($order['pincode']) . '</p>';
+            echo '<p><strong>Buyer Phone:</strong> ' . htmlspecialchars($order['buyer_phone']) . '</p>';
+            echo '<p><strong>Payment Mode:</strong> ' . htmlspecialchars($order['payment_mode']) . '</p>';
+            if ($order['payment_mode'] == 'online') {
+                echo '<p><strong>Payment Status:</strong> Done</p>';
+            } else {
+                echo '<p><strong>Payment Status:</strong> Pending (COD)</p>';
+            }
             echo '</div>';
             echo '</div>';
             echo '</div>';
             echo '<div class="modal-footer">';
             echo '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>';
-            echo '<button class="btn btn-success approve-request" data-request-id="' . $request['request_id'] . '">Approve</button>';
-            echo '<button class="btn btn-danger decline-request" data-request-id="' . $request['request_id'] . '">Decline</button>';
+            echo '<button class="btn btn-success approve-order" data-order-id="' . $order['order_id'] . '" onclick="approveRequest(' . $order['order_id'] . ')">Approve</button>';
+            echo '<button class="btn btn-warning complete-order" data-order-id="' . $order['order_id'] . '" onclick="completeOrder(' . $order['order_id'] . ')">Complete</button>';
             echo '</div>';
             echo '</div>';
             echo '</div>';
@@ -107,7 +110,7 @@ try {
         echo '</div>';
         echo '</div>';
     } else {
-        echo '<div class="alert alert-info text-center">No pending requests found</div>';
+        echo '<div class="alert alert-info text-center">No pending orders found</div>';
     }
 } catch (PDOException $e) {
     echo '<div class="alert alert-danger">Database error: ' . $e->getMessage() . '</div>';

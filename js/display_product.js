@@ -1,49 +1,4 @@
-// function createModalElement() {
-//     // alert("clicked");
-//     // Create wrap-modal1 div
-//     var wrapModal1 = document.createElement('div');
-//     wrapModal1.className = 'wrap-modal1 js-modal1 p-t-60 p-b-20';
     
-//     // Create overlay-modal1 div
-//     var overlayModal1 = document.createElement('div');
-//     overlayModal1.className = 'overlay-modal1 js-hide-modal1';
-    
-//     // Create container div
-//     var containerDiv = document.createElement('div');
-//     containerDiv.className = 'container';
-    
-//     // Create inner div with classes bg0 p-t-60 p-b-30 p-lr-15-lg how-pos3-parent
-//     var innerDiv = document.createElement('div');
-//     innerDiv.className = 'bg0 p-t-60 p-b-30 p-lr-15-lg how-pos3-parent';
-    
-//     // Create close button
-//     var closeButton = document.createElement('button');
-//     closeButton.className = 'how-pos3 hov3 trans-04 js-hide-modal1';
-//     closeButton.innerHTML = '<img src="images/icons/icon-close.png" alt="CLOSE">';
-    
-//     // Append close button to inner div
-//     innerDiv.appendChild(closeButton);
-    
-//     // Create row div
-//     var rowDiv = document.createElement('div');
-//     rowDiv.className = 'row';
-    
-//     // Append row div to inner div
-//     innerDiv.appendChild(rowDiv);
-    
-//     // Append inner div to container div
-//     containerDiv.appendChild(innerDiv);
-    
-//     // Append overlay-modal1 div to wrap-modal1 div
-//     wrapModal1.appendChild(overlayModal1);
-    
-//     // Append container div to wrap-modal1 div
-//     wrapModal1.appendChild(containerDiv);
-    
-//     // Append wrap-modal1 div to body
-//     document.body.appendChild(wrapModal1);
-// }
-
 // // Call the function to create the modal element
 document.addEventListener("DOMContentLoaded", function () {
     let allProducts = []; // Array to store all products
@@ -57,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const response = await fetch('fetch_products.php');
             const data = await response.json();
             allProducts = data;
+            console.log(allProducts);
             loadMoreProducts(); // Load initial set of products
         } catch (error) {
             console.error('Error fetching products:', error);

@@ -12,7 +12,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <link rel="stylesheet" href="css/dashboard.css">
 
-
 </head>
 
 <body>
@@ -36,36 +35,28 @@
           data-target="#productMenu" aria-expanded="false"><i class="fas fa-box mr-2"></i> Products</a>
         <div id="productMenu" class="collapse">
           <a href="#" class="nav-link text-white py-3 px-5" data-target="add_product"
-            onclick="loadContent('add_product')"><i class="fas fa-plus mr-2"></i> Add Product</a>
+            onclick="loadContent('add_product')"><i class="fas fa-plus mr-2"></i> Add Book</a>
           <a href="#" class="nav-link text-white py-3 px-5" data-target="display_products"
-            onclick="loadContent('display_products')"><i class="fas fa-list mr-2"></i> Display Products</a>
+            onclick="loadContent('display_products')"><i class="fas fa-list mr-2"></i> Display Books</a>
         </div>
+
+        <a href="#" class="nav-link text-white py-3 px-4 dropdown-toggle" data-toggle="collapse" data-target="#pdfMenu"
+          aria-expanded="false"><i class="fas fa-box mr-2"></i> PDFs</a>
+        <div id="pdfMenu" class="collapse">
+          <a href="#" class="nav-link text-white py-3 px-5" data-target="add_pdf" onclick="loadContent('add_pdf')"><i
+              class="fas fa-plus mr-2"></i> Add PDF</a>
+          <a href="#" class="nav-link text-white py-3 px-5" data-target="display_pdfs"
+            onclick="loadContent('display_pdfs')"><i class="fas fa-list mr-2"></i> Display PDFs</a>
+        </div>
+
         <a href="#" class="nav-link text-white py-3 px-4 dropdown-toggle" data-toggle="collapse"
           data-target="#requestMenu" aria-expanded="false"><i class="fas fa-clipboard-list mr-2"></i> Buyer Requests</a>
         <div id="requestMenu" class="collapse">
           <a href="#" class="nav-link text-white py-3 px-5" data-target="user_completed_requests"
             onclick="loadContent('user_completed_requests')"><i class="fas fa-check-double mr-2"></i>
             Completed</a>
-          <a href="#" class="nav-link text-white py-3 px-5" data-target="user_approved_requests"
-            onclick="loadContent('user_approved_requests')"><i class="fas fa-check mr-2"></i> Approved</a>
           <a href="#" class="nav-link text-white py-3 px-5" data-target="user_pending_requests"
             onclick="loadContent('user_pending_requests')"><i class="fas fa-clock mr-2"></i> Pending</a>
-          <a href="#" class="nav-link text-white py-3 px-5" data-target="user_declined_requests"
-            onclick="loadContent('user_declined_requests')"><i class="fas fa-times mr-2"></i> Declined</a>
-        </div>
-
-        <a href="#" class="nav-link text-white py-3 px-4 dropdown-toggle" data-toggle="collapse"
-          data-target="#myRequestMenu" aria-expanded="false"><i class="fas fa-clipboard-list mr-2"></i> My
-          Requests</a>
-        <div id="myRequestMenu" class="collapse">
-          <a href="#" class="nav-link text-white py-3 px-5" data-target="my_completed_requests"
-            onclick="loadContent('my_completed_requests')"><i class="fas fa-check-circle mr-2"></i>Completed</a>
-          <a href="#" class="nav-link text-white py-3 px-5" data-target="my_approved_requests"
-            onclick="loadContent('my_approved_requests')"><i class="fas fa-thumbs-up mr-2"></i> Approved</a>
-          <a href="#" class="nav-link text-white py-3 px-5" data-target="my_pending_requests"
-            onclick="loadContent('my_pending_requests')"><i class="fas fa-hourglass-half mr-2"></i>Pending</a>
-          <a href="#" class="nav-link text-white py-3 px-5" data-target="my_declined_requests"
-            onclick="loadContent('my_declined_requests')"><i class="fas fa-hourglass-half mr-2"></i>Declined</a>
         </div>
 
         <a href="#" class="nav-link text-white py-3 px-4" data-target="notifications"
@@ -186,6 +177,67 @@
     }
   </script>
 
+  <script>
+    function openPdfModal(filePath) {
+      var viewer = document.getElementById('pdfViewer');
+      viewer.src = filePath; // Set the PDF source
+      $('#pdfModal').modal('show'); // Show the modal
+    }
+
+    // Clear the PDF source when the modal is closed
+    $('#pdfModal').on('hidden.bs.modal', function () {
+      $(this).find('#pdfViewer').attr('src', ''); // Clear the PDF source
+    });
+  </script>
+
+  <script>
+    function approveRequest(orderId) {
+      if (confirm('Are you sure you want to approve this order?')) {
+        fetch('includes/approve_order.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ order_id: orderId })
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              alert('Order approved successfully');
+              location.reload();
+            } else {
+              alert('Failed to approve order');
+            }
+          })
+          .catch(error => console.error('Error:', error));
+      }
+    }
+
+    function completeOrder(orderId) {
+      if (confirm('Are you sure you want to mark this order as complete?')) {
+        fetch('includes/complete_order.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ order_id: orderId })
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              alert('Order marked as complete');
+              location.reload();
+            } else {
+              alert('Failed to mark order as complete');
+            }
+          })
+          .catch(error => console.error('Error:', error));
+      }
+    }
+  </script>
+
+
+  <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
 </body>
 
 </html>
