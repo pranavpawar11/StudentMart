@@ -172,23 +172,22 @@ if (!isset($_SESSION["user_id"])) {
 						</ul>
 					</div>
 
-					<!-- Icon header -->
+					<!-- Icon header desktop -->
 					<div class="wrap-icon-header flex-w flex-r-m">
-						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
-							<i class="zmdi zmdi-search"></i>
-						</div>
-
-						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti active-menu"
-							data-notify="<?php echo $cart_count; ?>">
+						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 active-menu" id="cartIcon">
 							<a href="shoping-cart.php"><i class="zmdi zmdi-shopping-cart"></i></a>
 						</div>
 
-						<a href="#" onclick="fetchWishlist()"
-							class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart"
-							data-notify="<?php echo $wishlist_count; ?>">
-							<i class="zmdi zmdi-favorite-outline"></i>
-						</a>
+						<div class="dropdown icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11  js-show-cart"
+							id="wishlistDropdown">
+							<i class="zmdi zmdi-favorite-outline" onclick="fetchWishlist()"></i>
+							<div class="dropdown-content">
+								<a href="#" onclick="fetchWishlist()">Products</a>
+								<a href="#" onclick="fetchPdfWishlist()">PDFs</a>
+							</div>
+						</div>
 					</div>
+
 				</nav>
 			</div>
 		</div>
@@ -288,7 +287,7 @@ if (!isset($_SESSION["user_id"])) {
 		</div>
 	</header>
 
-	<!-- Cart -->
+	<!-- Wishlist -->
 	<div class="wrap-header-cart js-panel-cart">
 		<div class="s-full js-hide-cart"></div>
 		<div class="header-cart flex-col-l p-l-65 p-r-25">
@@ -318,9 +317,9 @@ if (!isset($_SESSION["user_id"])) {
 							View Cart
 						</a>
 
-						<a href="shoping-cart.php"
+						<a href="profile.php"
 							class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
-							Check Out
+							Subscribtion
 						</a>
 					</div>
 				</div>
@@ -328,7 +327,6 @@ if (!isset($_SESSION["user_id"])) {
 
 		</div>
 	</div>
-
 
 	<!-- Slider -->
 	<section class="section-slide">
@@ -974,6 +972,7 @@ if (!isset($_SESSION["user_id"])) {
 	</script>
 
 	<script src="js/login_logout.js"></script>
+    <script src="js/pdf_Wishlist.js"></script>
 </body>
 
 </html>

@@ -103,7 +103,7 @@ function fetchPdfWishlist() {
                                 <span>Price: ₹${price}</span>
                             </div>
                         </div>
-                        <div class="header-cart-item-actions">
+                        <div class="header-cart-item-actions p-2">
                             <div class="wishlist-item-info">
                                 <a href="pdf-detail.php?id=${pdf_id}" class="header-cart-item-info-btn">
                                     <i class="far fa-eye"></i> <!-- Icon for displaying PDF info -->
@@ -120,7 +120,11 @@ function fetchPdfWishlist() {
                     fragment.appendChild(wishlistItem);
                 });
 
-                wishlistContainer.innerHTML = '';
+                wishlistContainer.innerHTML = `
+                    <div class="wishlist-pdf-header" style="font-size: 1.5em; color: #333; font-weight: bold; margin-bottom: 15px;">
+                        PDFs
+                    </div>
+                `;
                 wishlistContainer.appendChild(fragment);
 
                 // Update total

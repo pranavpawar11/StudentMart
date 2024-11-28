@@ -1,5 +1,5 @@
 <?php
-include ('php/cart-wishlist-notification.php');
+include('php/cart-wishlist-notification.php');
 include './php/conn.php'; // Include the conn.php file to establish a database connection
 ?>
 
@@ -112,7 +112,10 @@ include './php/conn.php'; // Include the conn.php file to establish a database c
                                 <a href="index.php">Home</a>
                             </li>
                             <li class="active-menu">
-                                <a href="product.php">Shop</a>
+                                <a href="product.php">Books</a>
+                            </li>
+                            <li>
+                                <a href="shop_pdf.php">PDFs</a>
                             </li>
 
                             <li>
@@ -120,27 +123,32 @@ include './php/conn.php'; // Include the conn.php file to establish a database c
                             </li>
 
                             <li>
-                                <a href="dashboard.php">Dashboard</a>
+                                <a href="my-orders.php">My Orders</a>
                             </li>
+
+                            <!-- <li>
+                                <a href="dashboard.php">Dashboard</a>
+                            </li> -->
+
                         </ul>
                     </div>
 
-                    <!-- Icon header -->
+                    <!-- Icon header desktop -->
                     <div class="wrap-icon-header flex-w flex-r-m">
-
-
-                        <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti active-menu"
-                            id="cartIcon" data-notify="<?php echo $cart_count; ?>">
+                        <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11" id="cartIcon">
                             <a href="shoping-cart.php"><i class="zmdi zmdi-shopping-cart"></i></a>
                         </div>
 
-                        <a href="#" onclick="fetchWishlist()"
-                            class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart"
-                            id="wishlistIcon" data-notify="<?php echo $wishlist_count; ?>">
-                            <i class="zmdi zmdi-favorite-outline"></i>
-                        </a>
-
+                        <div class="dropdown icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11  js-show-cart"
+                            id="wishlistDropdown">
+                            <i class="zmdi zmdi-favorite-outline" onclick="fetchWishlist()"></i>
+                            <div class="dropdown-content">
+                                <a href="#" onclick="fetchWishlist()">Products</a>
+                                <a href="#" onclick="fetchPdfWishlist()">PDFs</a>
+                            </div>
+                        </div>
                     </div>
+
                 </nav>
             </div>
         </div>
@@ -270,9 +278,9 @@ include './php/conn.php'; // Include the conn.php file to establish a database c
                             View Cart
                         </a>
 
-                        <a href="shoping-cart.php"
+                        <a href="profile.php"
                             class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
-                            Check Out
+                            Subscribtion
                         </a>
                     </div>
                 </div>
@@ -297,7 +305,7 @@ include './php/conn.php'; // Include the conn.php file to establish a database c
                         Books
                     </button>
                     <button class="filter-btn stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter="electronics">
-                        Electronics 
+                        Electronics
                     </button>
                     <button class="filter-btn stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter="drawings">
                         Drawings
@@ -413,7 +421,7 @@ include './php/conn.php'; // Include the conn.php file to establish a database c
                                 </li>
                                 <li class="p-b-6">
                                     <a href="#" class="filter-link stext-106 trans-04" data-place="Sinhgad">
-                                    Sinhgad
+                                        Sinhgad
                                     </a>
                                 </li>
                             </ul>
@@ -648,6 +656,7 @@ include './php/conn.php'; // Include the conn.php file to establish a database c
 
     <script src="js/whishlist.js"></script>
 
+    <script src="js/pdf_Wishlist.js"></script>
     <script src="js/display_product.js"></script>
     <script src="js/login_logout.js"></script>
 

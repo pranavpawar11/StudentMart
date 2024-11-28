@@ -111,8 +111,11 @@ include './php/conn.php'; // Include the conn.php file to establish a database c
                             <li>
                                 <a href="index.php">Home</a>
                             </li>
+                            <li>
+                                <a href="product.php">Books</a>
+                            </li>
                             <li class="active-menu">
-                                <a href="product.php">Shop</a>
+                                <a href="shop_pdf.php">PDFs</a>
                             </li>
 
                             <li>
@@ -120,15 +123,24 @@ include './php/conn.php'; // Include the conn.php file to establish a database c
                             </li>
 
                             <li>
-                                <a href="dashboard.php">Dashboard</a>
+                                <a href="my-orders.php">My Orders</a>
                             </li>
+
+                            <!-- <li>
+                                <a href="dashboard.php">Dashboard</a>
+                            </li> -->
+
                         </ul>
                     </div>
 
-                    <!-- Icon header -->
+                    <!-- <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti active-menu"
+                        id="cartIcon" data-notify="<?php echo $cart_count; ?>">
+                        <a href="shoping-cart.php"><i class="zmdi zmdi-shopping-cart"></i></a>
+                    </div> -->
+
+                    <!-- Icon header desktop -->
                     <div class="wrap-icon-header flex-w flex-r-m">
-                        <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti active-menu"
-                            id="cartIcon" data-notify="<?php echo $cart_count; ?>">
+                        <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 active-menu" id="cartIcon">
                             <a href="shoping-cart.php"><i class="zmdi zmdi-shopping-cart"></i></a>
                         </div>
 
@@ -243,44 +255,44 @@ include './php/conn.php'; // Include the conn.php file to establish a database c
 
     <!-- whishlist  -->
     <div class="wrap-header-cart js-panel-cart">
-        <div class="s-full js-hide-cart"></div>
-        <div class="header-cart flex-col-l p-l-65 p-r-25">
-            <div class="header-cart-title flex-w flex-sb-m p-b-8">
-                <span class="mtext-103 cl2">
-                    my Wishlist
-                </span>
+		<div class="s-full js-hide-cart"></div>
+		<div class="header-cart flex-col-l p-l-65 p-r-25">
+			<div class="header-cart-title flex-w flex-sb-m p-b-8">
+				<span class="mtext-103 cl2">
+					my Wishlist
+				</span>
 
-                <div class="fs-35 lh-10 cl2 p-lr-5 pointer hov-cl1 trans-04 js-hide-cart">
-                    <i class="zmdi zmdi-close"></i>
-                </div>
-            </div>
+				<div class="fs-35 lh-10 cl2 p-lr-5 pointer hov-cl1 trans-04 js-hide-cart">
+					<i class="zmdi zmdi-close"></i>
+				</div>
+			</div>
 
-            <div class="header-cart-content flex-w js-pscroll">
-                <ul class="header-cart-wrapitem w-full">
-                    <!-- Wishlist items will be inserted here dynamically -->
-                </ul>
+			<div class="header-cart-content flex-w js-pscroll">
+				<ul class="header-cart-wrapitem w-full">
+					<!-- Wishlist items will be inserted here dynamically -->
+				</ul>
 
-                <div class="w-full">
-                    <div class="header-cart-total w-full p-tb-40">
-                        <!-- Total will be inserted here dynamically -->
-                    </div>
+				<div class="w-full">
+					<div class="header-cart-total w-full p-tb-40">
+						<!-- Total will be inserted here dynamically -->
+					</div>
 
-                    <!-- <div class="header-cart-buttons flex-w w-full">
-                        <a href="shoping-cart.php"
-                            class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-r-8 m-b-10">
-                            View Cart
-                        </a>
+					<div class="header-cart-buttons flex-w w-full">
+						<a href="shoping-cart.php"
+							class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-r-8 m-b-10">
+							View Cart
+						</a>
 
-                        <a href="shoping-cart.php"
-                            class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
-                            Check Out
-                        </a>
-                    </div> -->
-                </div>
-            </div>
+						<a href="profile.php"
+							class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
+							Subscribtion
+						</a>
+					</div>
+				</div>
+			</div>
 
-        </div>
-    </div>
+		</div>
+	</div>
 
 
     <!-- Product -->

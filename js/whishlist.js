@@ -116,21 +116,25 @@ function fetchWishlist() {
                     fragment.appendChild(wishlistItem);
                 });
 
-                wishlistContainer.innerHTML = '';
+                wishlistContainer.innerHTML = `
+                <div class="wishlist-pdf-header" style="font-size: 1.5em; color: #333; font-weight: bold; margin-bottom: 15px;">
+                    Products
+                </div>
+            `;
                 wishlistContainer.appendChild(fragment);
 
                 // Update total
-                totalContainer.textContent = `Total: ₹${total.toFixed(2)}`;
+                // totalContainer.textContent = `Total: ₹${total.toFixed(2)}`;
             } else {
                 // Display message if wishlist is empty
                 wishlistContainer.innerHTML = '<li class="header-cart-item flex-w flex-t m-b-12">Your wishlist is empty.</li>';
-                totalContainer.textContent = 'Total: ₹0.00';
+                // totalContainer.textContent = 'Total: ₹0.00';
             }
         })
         .catch(error => {
             console.error('Error:', error);
             document.querySelector('.header-cart-wrapitem').innerHTML = `<li class="header-cart-item flex-w flex-t m-b-12">Error loading wishlist: ${error.message}</li>`;
-            document.querySelector('.header-cart-total').innerHTML = '';
+            // document.querySelector('.header-cart-total').innerHTML = '';
         });
 }
 

@@ -34,16 +34,16 @@ function fetchWishlist() {
                     `;
                 });
                 
-                document.querySelector('.header-cart-wrapitem').innerHTML = wishlistContent;
-                document.querySelector('.header-cart-total').innerHTML = `Total: ₹${total.toFixed(2)}`;
+                // document.querySelector('.header-cart-wrapitem').innerHTML = wishlistContent;
+                // document.querySelector('.header-cart-total').innerHTML = `Total: ₹${total.toFixed(2)}`;
             } else {
                 document.querySelector('.header-cart-wrapitem').innerHTML = '<li class="header-cart-item flex-w flex-t m-b-12">Your wishlist is empty.</li>';
-                document.querySelector('.header-cart-total').innerHTML = 'Total: ₹0.00';
+                // document.querySelector('.header-cart-total').innerHTML = 'Total: ₹0.00';
             }
         })
         .catch(error => {
             console.error('Error:', error);
             document.querySelector('.header-cart-wrapitem').innerHTML = `<li class="header-cart-item flex-w flex-t m-b-12">Error loading wishlist: ${error.message}</li>`;
-            document.querySelector('.header-cart-total').innerHTML = '';
+            // document.querySelector('.header-cart-total').innerHTML = '';
         });
 }

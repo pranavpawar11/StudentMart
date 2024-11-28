@@ -1,8 +1,8 @@
 <?php
 
-include ('php/conn.php'); // Include the conn.php file to establish a database connection
+include('php/conn.php'); // Include the conn.php file to establish a database connection
 
-include ('php/cart-wishlist-notification.php');
+include('php/cart-wishlist-notification.php');
 // Query to fetch product information from the database
 
 if (isset($_GET['id'])) {
@@ -57,6 +57,10 @@ if (isset($_GET['id'])) {
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 	<link rel="stylesheet" type="text/css" href="css/styles.css">
 	<!--===============================================================================================-->
+	<style>
+
+
+	</style>
 </head>
 
 <body class="animsition">
@@ -120,7 +124,10 @@ if (isset($_GET['id'])) {
 								<a href="index.php">Home</a>
 							</li>
 							<li class="active-menu">
-								<a href="product.php">Shop</a>
+								<a href="product.php">Books</a>
+							</li>
+							<li>
+								<a href="shop_pdf.php">PDFs</a>
 							</li>
 
 							<li>
@@ -128,29 +135,32 @@ if (isset($_GET['id'])) {
 							</li>
 
 							<li>
-								<a href="dashboard.php">Dashboard</a>
+								<a href="my-orders.php">My Orders</a>
 							</li>
+
+							<!-- <li>
+								<a href="dashboard.php">Dashboard</a>
+							</li> -->
 
 						</ul>
 					</div>
 
-					<!-- Icon header -->
-					<div class="wrap-icon-header flex-w flex-r-m">
-						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
-							<i class="zmdi zmdi-search"></i>
-						</div>
+					 <!-- Icon header desktop -->
+					 <div class="wrap-icon-header flex-w flex-r-m">
+                        <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 active-menu" id="cartIcon">
+                            <a href="shoping-cart.php"><i class="zmdi zmdi-shopping-cart"></i></a>
+                        </div>
 
-						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti active-menu"
-							data-notify="<?php echo $cart_count; ?>">
-							<a href="shoping-cart.php"><i class="zmdi zmdi-shopping-cart"></i></a>
-						</div>
+                        <div class="dropdown icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11  js-show-cart"
+                            id="wishlistDropdown">
+                            <i class="zmdi zmdi-favorite-outline" onclick="fetchPdfWishlist()"></i>
+                            <div class="dropdown-content">
+                                <a href="#" onclick="fetchWishlist()">Products</a>
+                                <a href="#" onclick="fetchPdfWishlist()">PDFs</a>
+                            </div>
+                        </div>
+                    </div>
 
-						<a href="#" onclick="fetchWishlist()"
-							class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart"
-							data-notify="<?php echo $wishlist_count; ?>">
-							<i class="zmdi zmdi-favorite-outline"></i>
-						</a>
-					</div>
 				</nav>
 			</div>
 		</div>
@@ -250,7 +260,7 @@ if (isset($_GET['id'])) {
 		</div>
 	</header>
 
-	<!-- Cart -->
+	<!-- Wishlist -->
 	<div class="wrap-header-cart js-panel-cart">
 		<div class="s-full js-hide-cart"></div>
 		<div class="header-cart flex-col-l p-l-65 p-r-25">
@@ -280,9 +290,9 @@ if (isset($_GET['id'])) {
 							View Cart
 						</a>
 
-						<a href="shoping-cart.php"
+						<a href="profile.php"
 							class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
-							Check Out
+							Subscribtion
 						</a>
 					</div>
 				</div>
@@ -427,8 +437,84 @@ if (isset($_GET['id'])) {
 					</div>
 				</div>
 			</div>
+
+			<div class="bor10 m-t-50 p-t-43 p-b-40">
+				<div class="tab01">
+					<ul class="nav nav-tabs" role="tablist">
+						<li class="nav-item p-b-10">
+							<a class="nav-link" data-toggle="tab" href="#reviews" role="tab">Reviews</a>
+						</li>
+					</ul>
+
+					<div class="tab-content p-t-43">
+						<div class="tab-pane fade show active" id="reviews">
+							<div class="row">
+								<div class="col-sm-10 col-md-8 col-lg-6 m-lr-auto">
+									<div class="p-b-30 m-lr-15-sm">
+										<!-- Reviews Section -->
+										<div class="reviews-container">
+											<!-- PHP will insert reviews here -->
+											<?php include 'php/fetch_reviews.php'; ?>
+										</div>
+
+										<!-- Add Review Section -->
+										<div class="add-review-container">
+											<form id="reviewForm" class="w-full">
+												<h5 class="mtext-108 cl2 p-b-7">
+													Add a review
+												</h5>
+
+												<p class="stext-102 cl6">
+													Your email address will not be published. Required fields are marked
+													*
+												</p>
+
+												<div class="flex-w flex-m p-t-50 p-b-23">
+													<span class="stext-102 cl3 m-r-16">
+														Your Rating
+													</span>
+
+													<span class="wrap-rating fs-18 cl11 pointer">
+														<i class="item-rating pointer zmdi zmdi-star-outline"></i>
+														<i class="item-rating pointer zmdi zmdi-star-outline"></i>
+														<i class="item-rating pointer zmdi zmdi-star-outline"></i>
+														<i class="item-rating pointer zmdi zmdi-star-outline"></i>
+														<i class="item-rating pointer zmdi zmdi-star-outline"></i>
+														<input class="dis-none" type="number" name="rating" required>
+													</span>
+												</div>
+
+												<div class="row p-b-25">
+													<div class="col-12 p-b-5">
+														<label class="stext-102 cl3" for="review">Your review</label>
+														<textarea class="size-110 bor8 stext-102 cl2 p-lr-20 p-tb-10"
+															id="review" name="review_text" required></textarea>
+													</div>
+												</div>
+
+												<!-- Hidden product ID input -->
+												<input type="hidden" name="product_id"
+													value="<?php echo $product_details['product_id']; ?>">
+
+												<button type="button" id="submitReview"
+													class="flex-c-m stext-101 cl0 size-112 bg7 bor11 hov-btn3 p-lr-15 trans-04 m-b-10">
+													Submit
+												</button>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+
 		</div>
 		</div>
+
 	</section>
 
 	<!-- Footer -->
@@ -584,12 +670,57 @@ if (isset($_GET['id'])) {
 			})
 		});
 	</script>
+
+
+
+	<script>
+		document.getElementById('submitReview').addEventListener('click', function () {
+			const form = document.getElementById('reviewForm');
+			const formData = new FormData(form);
+			const data = {
+				product_id: formData.get('product_id'),
+				rating: formData.get('rating'),
+				review_text: formData.get('review_text')
+			};
+
+			fetch('php/add_review.php', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data)
+			})
+				.then(response => response.json())
+				.then(data => {
+					if (data.message) {
+						swal("Success!", data.message, "success");
+						// Optionally, reload the reviews section
+						// location.reload(); // Reload the entire page
+					} else {
+						swal("Error!", data.error, "error");
+					}
+				})
+				.catch(error => {
+					swal("Error!", "There was a problem with your review submission.", "error");
+				});
+		});
+
+		document.querySelectorAll('.item-rating').forEach(function (star, index) {
+			star.addEventListener('click', function () {
+				document.querySelector('input[name="rating"]').value = index + 1;
+				document.querySelectorAll('.item-rating').forEach(function (s, i) {
+					s.classList.toggle('zmdi-star', i <= index);
+					s.classList.toggle('zmdi-star-outline', i > index);
+				});
+			});
+		});
+	</script>
 	<!--===============================================================================================-->
 	<script src="js/main.js"></script>
 	<script src="js/add_to_cart.js"></script>
 	<script src="js/whishlist.js"></script>
 	<script src="js/login_logout.js"></script>
-
+    <script src="js/pdf_Wishlist.js"></script>
 </body>
 
 </html>
