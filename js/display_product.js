@@ -19,6 +19,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    function clearAllFilters() {
+        // Reset the displayed products and PDFs to the full list
+        displayedProducts = allProducts.slice(0, offset + productsPerLoad);
+    
+        // Display the products and PDFs again
+        displayProducts(displayedProducts);
+    }
+
     // Function to display products
     function displayProducts(products) {
         const productContainer = document.getElementById('productContainer');
@@ -153,7 +161,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Event listener for Load More button
     document.getElementById('load-more-btn').addEventListener('click', loadMoreProducts);
-
+    document.getElementById('clear-filter-btn').addEventListener('click', clearAllFilters);
     // Initial fetch of all products
     fetchAllProducts();
 });

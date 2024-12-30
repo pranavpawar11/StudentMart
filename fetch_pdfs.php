@@ -22,6 +22,7 @@ try {
                    pdf.img3, 
                    pdf.description, 
                    pdf.upload_date,
+                   pdf.category,
                    CASE 
                        WHEN pw.pdf_id IS NOT NULL THEN 'images/icons/icon-heart-02.png' 
                        ELSE 'images/icons/icon-heart-01.png' 

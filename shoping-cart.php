@@ -97,9 +97,9 @@ $default_product = empty($cart_products) ? null : $cart_products[0];
 					</div>
 
 					<div class="right-top-bar flex-w h-full">
-						<a href="#" class="flex-c-m trans-04 p-lr-25">
+						<!-- <a href="#" class="flex-c-m trans-04 p-lr-25">
 							Help & FAQs
-						</a>
+						</a> -->
 
 						<a href="profile.php" class="flex-c-m trans-04 p-lr-25">
 							My Account
@@ -157,21 +157,21 @@ $default_product = empty($cart_products) ? null : $cart_products[0];
 						</ul>
 					</div>
 
-					 <!-- Icon header desktop -->
-					 <div class="wrap-icon-header flex-w flex-r-m">
-                        <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 active-menu" id="cartIcon">
-                            <a href="shoping-cart.php"><i class="zmdi zmdi-shopping-cart"></i></a>
-                        </div>
+					<!-- Icon header desktop -->
+					<div class="wrap-icon-header flex-w flex-r-m">
+						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 active-menu" id="cartIcon">
+							<a href="shoping-cart.php"><i class="zmdi zmdi-shopping-cart"></i></a>
+						</div>
 
-                        <div class="dropdown icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11  js-show-cart"
-                            id="wishlistDropdown">
-                            <i class="zmdi zmdi-favorite-outline" onclick="fetchWishlist()"></i>
-                            <div class="dropdown-content">
-                                <a href="#" onclick="fetchWishlist()">Products</a>
-                                <a href="#" onclick="fetchPdfWishlist()">PDFs</a>
-                            </div>
-                        </div>
-                    </div>
+						<div class="dropdown icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11  js-show-cart"
+							id="wishlistDropdown">
+							<i class="zmdi zmdi-favorite-outline" onclick="fetchWishlist()"></i>
+							<div class="dropdown-content">
+								<a href="#" onclick="fetchWishlist()">Products</a>
+								<a href="#" onclick="fetchPdfWishlist()">PDFs</a>
+							</div>
+						</div>
+					</div>
 
 				</nav>
 			</div>
@@ -188,20 +188,19 @@ $default_product = empty($cart_products) ? null : $cart_products[0];
 
 			<!-- Icon header -->
 			<div class="wrap-icon-header flex-w flex-r-m m-r-15">
-				<!-- <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
-					<i class="zmdi zmdi-search"></i>
-				</div> -->
 
-				<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti active-menu"
-					data-notify="<?php echo $cart_count; ?>">
+
+				<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 active-menu">
 					<a href="shoping-cart.php"><i class="zmdi zmdi-shopping-cart"></i></a>
 				</div>
 
-				<a href="#" onclick="fetchWishlist()"
-					class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart"
-					data-notify="<?php echo $wishlist_count; ?>">
-					<i class="zmdi zmdi-favorite-outline"></i>
-				</a>
+				<!-- <div class="dropdown cl2 hov-cl1 trans-04 p-l-22 p-r-11" id="wishlistDropdown">
+					<i class="zmdi zmdi-favorite-outline" onclick="fetchWishlist()"></i>
+					<div class="dropdown-content">
+						<a href="#" onclick="fetchWishlist()">Products</a>
+						<a href="#" onclick="fetchPdfWishlist()">PDFs</a>
+					</div>
+				</div> -->
 
 				<div class="user-dropdown">
 					<button class="dropdown-toggle">
@@ -236,24 +235,26 @@ $default_product = empty($cart_products) ? null : $cart_products[0];
 		<div class="menu-mobile">
 
 			<ul class="main-menu">
-				<li class="active-menu">
+				<li>
 					<a href="index.php">Home</a>
 				</li>
 				<li>
-					<a href="product.php">Shop</a>
+					<a href="product.php">Books</a>
+				</li>
+				<li>
+					<a href="shop_pdf.php">PDFs</a>
 				</li>
 
-				<li>
+				<li class="active-menu">
 					<a href="shoping-cart.php">Cart</a>
 				</li>
 
 				<li>
-					<a href="dashboard.php">Dashboard</a>
+					<a href="my-orders.php">My Orders</a>
 				</li>
-
-
 			</ul>
 		</div>
+
 
 		<!-- Modal Search -->
 		<div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
@@ -778,7 +779,7 @@ $default_product = empty($cart_products) ? null : $cart_products[0];
 	<script src="js/login_logout.js"></script>
 	<script src="js/shopping_cart_functions.js"></script>
 
-    <script src="js/pdf_Wishlist.js"></script>
+	<script src="js/pdf_Wishlist.js"></script>
 	<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script src="vendor/sweetalert/sweetalert.min.js"></script>

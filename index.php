@@ -111,9 +111,9 @@ if (!isset($_SESSION["user_id"])) {
 					</div>
 
 					<div class="right-top-bar flex-w h-full">
-						<a href="#" class="flex-c-m trans-04 p-lr-25">
+						<!-- <a href="#" class="flex-c-m trans-04 p-lr-25">
 							Help & FAQs
-						</a>
+						</a> -->
 
 						<a href="profile.php" class="flex-c-m trans-04 p-lr-25">
 							My Account
@@ -203,20 +203,19 @@ if (!isset($_SESSION["user_id"])) {
 
 			<!-- Icon header -->
 			<div class="wrap-icon-header flex-w flex-r-m m-r-15">
-				<!-- <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
-					<i class="zmdi zmdi-search"></i>
-				</div> -->
 
-				<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti active-menu"
-					data-notify="<?php echo $cart_count; ?>">
+
+				<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 active-menu">
 					<a href="shoping-cart.php"><i class="zmdi zmdi-shopping-cart"></i></a>
 				</div>
 
-				<a href="#" onclick="fetchWishlist()"
-					class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart"
-					data-notify="<?php echo $wishlist_count; ?>">
-					<i class="zmdi zmdi-favorite-outline"></i>
-				</a>
+				<!-- <div class="dropdown cl2 hov-cl1 trans-04 p-l-22 p-r-11" id="wishlistDropdown">
+					<i class="zmdi zmdi-favorite-outline" onclick="fetchWishlist()"></i>
+					<div class="dropdown-content">
+						<a href="#" onclick="fetchWishlist()">Products</a>
+						<a href="#" onclick="fetchPdfWishlist()">PDFs</a>
+					</div>
+				</div> -->
 
 				<div class="user-dropdown">
 					<button class="dropdown-toggle">
@@ -255,18 +254,19 @@ if (!isset($_SESSION["user_id"])) {
 					<a href="index.php">Home</a>
 				</li>
 				<li>
-					<a href="shop_pdf.php">Shop</a>
+					<a href="product.php">Books</a>
+				</li>
+				<li>
+					<a href="shop_pdf.php">PDFs</a>
 				</li>
 
 				<li>
 					<a href="shoping-cart.php">Cart</a>
 				</li>
 
-				<!-- <li>
-					<a href="dashboard.php">Dashboard</a>
-				</li> -->
-
-
+				<li>
+					<a href="my-orders.php">My Orders</a>
+				</li>
 			</ul>
 		</div>
 
@@ -972,7 +972,7 @@ if (!isset($_SESSION["user_id"])) {
 	</script>
 
 	<script src="js/login_logout.js"></script>
-    <script src="js/pdf_Wishlist.js"></script>
+	<script src="js/pdf_Wishlist.js"></script>
 </body>
 
 </html>
