@@ -113,7 +113,7 @@ include('php/conn.php');
 								<a href="index.php">Home</a>
 							</li>
 							<li>
-								<a href="product.php">Books</a>
+								<a href="product.php">Products</a>
 							</li>
 							<li>
 								<a href="shop_pdf.php">PDFs</a>
@@ -216,7 +216,7 @@ include('php/conn.php');
 					<a href="index.php">Home</a>
 				</li>
 				<li>
-					<a href="product.php">Books</a>
+					<a href="product.php">Products</a>
 				</li>
 				<li>
 					<a href="shop_pdf.php">PDFs</a>

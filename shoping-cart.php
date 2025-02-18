@@ -136,7 +136,7 @@ $default_product = empty($cart_products) ? null : $cart_products[0];
 								<a href="index.php">Home</a>
 							</li>
 							<li>
-								<a href="product.php">Books</a>
+								<a href="product.php">Products</a>
 							</li>
 							<li>
 								<a href="shop_pdf.php">PDFs</a>
@@ -239,7 +239,7 @@ $default_product = empty($cart_products) ? null : $cart_products[0];
 					<a href="index.php">Home</a>
 				</li>
 				<li>
-					<a href="product.php">Books</a>
+					<a href="product.php">Products</a>
 				</li>
 				<li>
 					<a href="shop_pdf.php">PDFs</a>

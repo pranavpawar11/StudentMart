@@ -58,7 +58,7 @@ try {
             echo '<h5 class="card-title">' . htmlspecialchars($order['product_name']) . '</h5>';
             echo '<p class="card-text">' . htmlspecialchars($order['product_description']) . '</p>';
             echo '<div class="d-flex justify-content-between align-items-center">';
-            echo '<button class="btn btn-success approve-order" data-order-id="' . $order['order_id'] . '" onclick="approveRequest(' . $order['order_id'] . ')">Approve</button>';
+            // echo '<button class="btn btn-success approve-order" data-order-id="' . $order['order_id'] . '" onclick="approveRequest(' . $order['order_id'] . ')">Approve</button>';
             echo '<button class="btn btn-primary view-more" data-toggle="modal" data-target="#detailsModal_' . $order['order_id'] . '">View More</button>';
             echo '<button class="btn btn-warning complete-order" data-order-id="' . $order['order_id'] . '" onclick="completeOrder(' . $order['order_id'] . ')">Complete</button>';
             echo '</div>';
@@ -99,7 +99,7 @@ try {
             echo '</div>';
             echo '<div class="modal-footer">';
             echo '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>';
-            echo '<button class="btn btn-success approve-order" data-order-id="' . $order['order_id'] . '" onclick="approveRequest(' . $order['order_id'] . ')">Approve</button>';
+            // echo '<button class="btn btn-success approve-order" data-order-id="' . $order['order_id'] . '" onclick="approveRequest(' . $order['order_id'] . ')">Approve</button>';
             echo '<button class="btn btn-warning complete-order" data-order-id="' . $order['order_id'] . '" onclick="completeOrder(' . $order['order_id'] . ')">Complete</button>';
             echo '</div>';
             echo '</div>';

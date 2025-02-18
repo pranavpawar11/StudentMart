@@ -112,7 +112,7 @@ include './php/conn.php'; // Include the conn.php file to establish a database c
                                 <a href="index.php">Home</a>
                             </li>
                             <li class="active-menu">
-                                <a href="product.php">Books</a>
+                                <a href="product.php">Products</a>
                             </li>
                             <li>
                                 <a href="shop_pdf.php">PDFs</a>
@@ -215,7 +215,7 @@ include './php/conn.php'; // Include the conn.php file to establish a database c
                     <a href="index.php">Home</a>
                 </li>
                 <li class="active-menu">
-                    <a href="product.php">Books</a>
+                    <a href="product.php">Products</a>
                 </li>
                 <li>
                     <a href="shop_pdf.php">PDFs</a>

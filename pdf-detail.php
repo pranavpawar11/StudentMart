@@ -139,7 +139,7 @@ if (isset($_GET['id'])) {
 								<a href="index.php">Home</a>
 							</li>
 							<li>
-								<a href="product.php">Books</a>
+								<a href="product.php">Products</a>
 							</li>
 							<li class="active-menu">
 								<a href="shop_pdf.php">PDFs</a>
@@ -242,7 +242,7 @@ if (isset($_GET['id'])) {
 					<a href="index.php">Home</a>
 				</li>
 				<li>
-					<a href="product.php">Books</a>
+					<a href="product.php">Products</a>
 				</li>
 				<li  class="active-menu">
 					<a href="shop_pdf.php">PDFs</a>

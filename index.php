@@ -151,7 +151,7 @@ if (!isset($_SESSION["user_id"])) {
 								<a href="index.php">Home</a>
 							</li>
 							<li>
-								<a href="product.php">Books</a>
+								<a href="product.php">Products</a>
 							</li>
 							<li>
 								<a href="shop_pdf.php">PDFs</a>
@@ -254,7 +254,7 @@ if (!isset($_SESSION["user_id"])) {
 					<a href="index.php">Home</a>
 				</li>
 				<li>
-					<a href="product.php">Books</a>
+					<a href="product.php">Products</a>
 				</li>
 				<li>
 					<a href="shop_pdf.php">PDFs</a>
@@ -961,7 +961,7 @@ if (!isset($_SESSION["user_id"])) {
 				history.replaceState(null, '', window.location.pathname);
 			} else if (registerSuccess) {
 				// console.log("Showing register success popup");
-				showPopup("Registration successful! Please log in.");
+				showPopup("Registration successful!");
 				history.replaceState(null, '', window.location.pathname);
 			} else {
 				// console.log("No success condition met");
