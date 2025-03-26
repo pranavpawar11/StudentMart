@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 29, 2024 at 09:02 AM
+-- Generation Time: Feb 19, 2025 at 05:42 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -34,17 +34,6 @@ CREATE TABLE `cart` (
   `date_added` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `cart`
---
-
-INSERT INTO `cart` (`cart_id`, `user_id`, `product_id`, `date_added`) VALUES
-(141, 2, 8, '2024-07-18'),
-(144, 2, 6, '2024-07-20'),
-(145, 2, 3, '2024-07-20'),
-(146, 2, 7, '2024-08-11'),
-(147, 1, 10, '2024-11-15');
-
 -- --------------------------------------------------------
 
 --
@@ -60,18 +49,6 @@ CREATE TABLE `notifications` (
   `notification_type` varchar(100) DEFAULT NULL,
   `is_read` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `notifications`
---
-
-INSERT INTO `notifications` (`notification_id`, `seller_id`, `buyer_id`, `product_id`, `notification_date`, `notification_type`, `is_read`) VALUES
-(45, 1, 1, 10, '2024-11-18 08:00:57', 'New Order', 1),
-(46, 1, 1, 10, '2024-11-18 08:01:41', 'New Order', 0),
-(47, 1, 1, 10, '2024-11-18 10:16:02', 'New Order', 0),
-(48, 1, 1, 10, '2024-11-18 10:16:35', 'New Order', 0),
-(49, 1, 1, 10, '2024-11-18 10:17:08', 'New Order', 0),
-(50, 1, 1, 10, '2024-11-18 10:20:56', 'New Order', 1);
 
 -- --------------------------------------------------------
 
@@ -93,15 +70,6 @@ CREATE TABLE `orders` (
   `total_price` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `orders`
---
-
-INSERT INTO `orders` (`order_id`, `product_id`, `buyer_id`, `seller_id`, `status`, `payment_mode`, `order_date`, `complete_date`, `address`, `pincode`, `total_price`) VALUES
-(143, 10, 1, 1, 'completed', 'cod', '2024-11-18', '2024-11-20', 'dsdsd', 121212, 180),
-(145, 10, 1, 1, 'completed', 'online', '2024-11-18', '2024-11-25', 'cxc', 444444, 180),
-(146, 10, 1, 1, 'pending', 'online', '2024-11-18', '2024-11-25', 'cxc', 121212, 180);
-
 -- --------------------------------------------------------
 
 --
@@ -122,15 +90,6 @@ CREATE TABLE `pdf_documents` (
   `upload_date` date NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `pdf_documents`
---
-
-INSERT INTO `pdf_documents` (`pdf_id`, `pdf_name`, `category`, `pdf_path`, `price`, `rented_by`, `img1`, `img2`, `img3`, `description`, `upload_date`) VALUES
-(1, 'Notes', 'Technology', 'pdfs/documents/6710c3d7d5f56.pdf', 0, 12, 'pdfs/images/6710c3d7d65e8.jpg', 'pdfs/images/6710c3d7d69af.jpg', 'pdfs/images/6710c3d7d6b18.jpg', 'dsdsdsdsd', '2024-10-17'),
-(9, 'evyfyvwyjhvw', 'Education', 'pdfs/documents/6710efda1f9be.pdf', 212112, 0, 'pdfs/images/6710efda1fc6d.jpeg', 'pdfs/images/6710efda1fe28.jpeg', 'pdfs/images/6710efda1ff9e.jpeg', '212121212', '2024-10-17'),
-(10, 'DC motor', 'Entertainment', 'pdfs/documents/6736f1095294b.pdf', 121, 0, 'pdfs/images/6736f109536a2.jpg', 'pdfs/images/6736f10953f3a.jpeg', 'pdfs/images/6736f1095473d.webp', '2sddsdsd', '2024-11-15');
-
 -- --------------------------------------------------------
 
 --
@@ -146,14 +105,6 @@ CREATE TABLE `pdf_reviews` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `pdf_reviews`
---
-
-INSERT INTO `pdf_reviews` (`id`, `pdf_id`, `user_id`, `rating`, `review_text`, `created_at`) VALUES
-(1, 10, 1, 3, 'good', '2024-11-28 17:39:24'),
-(2, 1, 1, 4, 'best', '2024-11-28 17:39:40');
-
 -- --------------------------------------------------------
 
 --
@@ -166,14 +117,6 @@ CREATE TABLE `pdf_wishlist` (
   `pdf_id` int(11) NOT NULL,
   `date_added` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `pdf_wishlist`
---
-
-INSERT INTO `pdf_wishlist` (`wishlist_id`, `user_id`, `pdf_id`, `date_added`) VALUES
-(7, 1, 9, '2024-11-19 11:47:03'),
-(8, 1, 1, '2024-11-19 11:47:06');
 
 -- --------------------------------------------------------
 
@@ -199,23 +142,6 @@ CREATE TABLE `products` (
   `added_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `products`
---
-
-INSERT INTO `products` (`product_id`, `seller_id`, `category`, `product_name`, `authorbrand`, `product_description`, `product_price`, `duration_of_use`, `product_condition`, `product_status`, `available_area`, `img1`, `img2`, `img3`, `added_date`) VALUES
-(1, 1, 'books', 'Engineering Mathematics', 'Nirali , John Smith', 'This textbook is well-maintained with some highlighting on key sections. The cover shows minor signs of wear, but all pages are intact and legible. Perfect for college students and educators.\r\n', 100, 6, 'good', 'sold', 'Sinhgad', 'images/products/1_6698cb5f65ff7.jpg', 'images/products/1_6698cb5f66792.jpg', 'images/products/1_6698cb5f66b78.jpg', '2024-07-18'),
-(2, 1, 'books', 'Fundamentals of Physics', 'Nirali , David Halliday', 'This comprehensive physics textbook is essential for first-year engineering students. The book has some highlighting and notes in the margins, but all pages are intact and legible. The cover shows minor signs of wear.', 140, 6, 'good', 'available', 'Sinhgad', 'images/products/1_6698cc1fae64a.jpg', 'images/products/1_6698cc1fae8ee.jpg', 'images/products/1_6698cc1faec06.jpg', '2024-07-18'),
-(3, 1, 'books', 'Advanced Engineering Mathematics', 'Technoledge , Erwin Kreyszig', 'This book is a staple for engineering mathematics courses. It contains some highlighting and annotations. The cover shows minor wear, but the pages are intact and readable.', 122, 11, 'fair', 'available', 'Sinhgad', 'images/products/1_6698cc92d7df3.jpeg', 'images/products/1_6698cc92d807d.jpeg', 'images/products/1_6698cc92d82f6.jpeg', '2024-07-18'),
-(4, 1, 'electronics', 'Casio FX-991EX', 'Casio ', 'This high-performance scientific calculator is fully functional with a clear display. It has minor scratches on the body but works perfectly.', 800, 6, 'fair', 'available', 'Pune', 'images/products/1_6698ccd379f9a.jpeg', 'images/products/1_6698ccd37a956.jpeg', 'images/products/1_6698ccd37ae97.jpeg', '2024-07-18'),
-(5, 1, 'electronics', 'Texas Instruments TI-84 Plus ', 'Texas', 'Popular among students, this graphing calculator has some signs of wear on the buttons but remains fully operational. Screen is clear with no dead pixels.\r\n', 700, 10, 'good', 'available', 'pune', 'images/products/1_6698cd0204c0c.jpeg', 'images/products/1_6698cd020503f.jpeg', 'images/products/1_6698cd0205397.jpeg', '2024-07-18'),
-(6, 1, 'electronics', 'HP 35s Scientific Calculator', 'HP ', 'Designed for professionals, this calculator has a few surface scratches but is in good working condition. The display and buttons are fully functional.', 890, 2, 'like new', 'available', 'Sinhgad', 'images/products/1_6698cd498c9fe.jpeg', 'images/products/1_6698cd498ce3a.jpeg', 'images/products/1_6698cd498d126.jpeg', '2024-07-18'),
-(7, 1, 'electronics', 'Sharp EL-W516XBSL', 'Sharp ', 'This calculator boasts a WriteView display, 556 scientific functions, and the ability to perform complex calculations, making it a great choice for engineering students.', 780, 5, 'fair', 'available', 'pune', 'images/products/1_6698cdbf89814.jpeg', 'images/products/1_6698cdbf8a247.jpeg', 'images/products/1_6698cdbf8a651.jpeg', '2024-07-18'),
-(8, 1, 'electronics', 'Canon F-792SGA Scientific Calculator ', 'Canon', 'The Canon F-792SGA features a large LCD display, 648 scientific functions, and is solar and battery-powered for reliable use. It’s an excellent option for engineering students needing a comprehensive and durable calculator.', 800, 10, 'good', 'available', 'pune', 'images/products/1_6698ce0663da9.jpeg', 'images/products/1_6698ce06640e2.jpeg', 'images/products/1_6698ce06644a3.jpeg', '2024-07-18'),
-(9, 1, 'drawings', 'Engineering Drawing Tool Set ', 'Staedtler ', 'This comprehensive set includes scales, rulers, protractors, and other essential drafting tools needed for precise technical drawings. It\'s suitable for both beginners and professionals in engineering disciplines.', 500, 3, 'good', 'available', 'pune', 'images/products/1_6698cead9cdd4.jpeg', 'images/products/1_6698cead9d192.jpeg', 'images/products/1_6698cead9d540.jpeg', '2024-07-18'),
-(10, 1, 'drawings', 'Koh-I-Noor Individual Drafter', 'Koh-I-Noor', 'A standalone drafter by Koh-I-Noor, equipped with adjustable angles and measurements, designed for precision in technical drawing tasks. It’s compact, portable, and ideal for engineering students needing a reliable drafter for their projects.', 200, 6, 'like new', 'available', 'pune', 'images/products/1_6698cefc26d2d.jpeg', 'images/products/1_6698cefc27114.jpeg', 'images/products/1_6698cefc274ae.jpeg', '2024-07-18'),
-(11, 1, 'drawings', 'Professional Drafting Kit', 'Rotring', 'This kit includes a drafting table, T-square, mechanical pencils, erasers, and other professional-grade tools by Rotring, essential for detailed engineering drawings. Perfect for students and professionals alike.', 100, 6, 'fair', 'available', 'Sinhgad', 'images/products/1_6698cf59141c8.jpeg', 'images/products/1_6698cf59146b1.jpeg', 'images/products/1_6698cf5914abc.jpeg', '2024-07-18');
-
 -- --------------------------------------------------------
 
 --
@@ -231,14 +157,6 @@ CREATE TABLE `reviews` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `reviews`
---
-
-INSERT INTO `reviews` (`id`, `product_id`, `user_id`, `rating`, `review_text`, `created_at`) VALUES
-(3, 8, 1, 2, 'good', '2024-11-28 17:20:40'),
-(4, 7, 1, 3, 'best', '2024-11-28 17:21:05');
-
 -- --------------------------------------------------------
 
 --
@@ -252,14 +170,6 @@ CREATE TABLE `subscriptions` (
   `price` int(11) NOT NULL DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `subscriptions`
---
-
-INSERT INTO `subscriptions` (`id`, `name`, `duration`, `price`, `created_at`) VALUES
-(1, 'Weekly', 7, 350, '2024-11-15 07:25:36'),
-(2, 'Monthly', 30, 500, '2024-11-15 07:25:36');
 
 -- --------------------------------------------------------
 
@@ -279,14 +189,6 @@ CREATE TABLE `transactions` (
   `payment_date` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `transactions`
---
-
-INSERT INTO `transactions` (`id`, `user_id`, `product_id`, `subscription_id`, `order_id`, `transaction_id`, `amount`, `payment_status`, `payment_date`) VALUES
-(45, 1, NULL, 2, 'order_PN8qDeuSz3QZ8n', 'pay_PN8qOt5mSV6MCb', 1000.00, 'success', '2024-11-19 11:09:10'),
-(46, 1, NULL, 2, 'order_PN8uIshXFf3RSO', 'pay_PN8uUPJthkPu19', 1000.00, 'success', '2024-11-19 11:13:02');
-
 -- --------------------------------------------------------
 
 --
@@ -305,15 +207,6 @@ CREATE TABLE `user` (
   `subscription_expiry_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `user`
---
-
-INSERT INTO `user` (`user_id`, `fname`, `lname`, `email`, `phone`, `password`, `photo`, `subscription_status`, `subscription_expiry_date`) VALUES
-(1, 'Pranav', 'Pawar', 'pranav@123', 7709176271, '$2y$10$2QkA/fzd0igYjs1ZySoGfuK79z89hs.y0fr1QhwQrzwvmW6qO6Zgu', 'images/users/Iman.webp', 'active', NULL),
-(2, 'prajwal', 'pawar', 'prajwal@123', 8766477822, '$2y$10$2poG0.K0j7XwNkL3zcVNauowWkziHEwLIxI9wLwBerveLlcKnYX8m', 'images/users/IMG.jpg', 'inactive', NULL),
-(5, 'Shashank', 'Gavale', 'shsshank@gmail.com', 9834431768, '$2y$10$73Yp5VexFlxHa1Ou8ZLSLuLn4yZMlFN5MGjfwtRHYGysOGtYLYgJK', '', 'inactive', NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -329,13 +222,6 @@ CREATE TABLE `user_subscriptions` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `user_subscriptions`
---
-
-INSERT INTO `user_subscriptions` (`id`, `user_id`, `subscription_id`, `start_date`, `end_date`, `created_at`) VALUES
-(25, 1, 2, '2024-11-19', '2024-12-19', '2024-11-19 11:13:02');
-
 -- --------------------------------------------------------
 
 --
@@ -348,18 +234,6 @@ CREATE TABLE `wishlist` (
   `product_id` bigint(20) DEFAULT NULL,
   `date_added` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `wishlist`
---
-
-INSERT INTO `wishlist` (`wishlist_id`, `user_id`, `product_id`, `date_added`) VALUES
-(1, 0, 0, '0000-00-00'),
-(116, 1, 9, '2024-11-19'),
-(119, 1, 10, '2024-11-19'),
-(120, 1, NULL, '2024-11-19'),
-(121, 1, NULL, '2024-11-19'),
-(122, 1, 4, '2024-11-19');
 
 --
 -- Indexes for dumped tables
@@ -453,79 +327,79 @@ ALTER TABLE `wishlist`
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `cart_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=148;
+  MODIFY `cart_id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `notification_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `notification_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=148;
+  MODIFY `order_id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `pdf_documents`
 --
 ALTER TABLE `pdf_documents`
-  MODIFY `pdf_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `pdf_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `pdf_reviews`
 --
 ALTER TABLE `pdf_reviews`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `pdf_wishlist`
 --
 ALTER TABLE `pdf_wishlist`
-  MODIFY `wishlist_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `wishlist_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` bigint(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `product_id` bigint(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `subscriptions`
 --
 ALTER TABLE `subscriptions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `user_id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `user_subscriptions`
 --
 ALTER TABLE `user_subscriptions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `wishlist`
 --
 ALTER TABLE `wishlist`
-  MODIFY `wishlist_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=123;
+  MODIFY `wishlist_id` bigint(20) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
