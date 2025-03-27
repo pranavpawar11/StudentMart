@@ -3,33 +3,7 @@ function toggleSidebar() {
     document.querySelector('.sidebar').classList.toggle('active');
 }
 
-// Function to handle collapse toggling for main menu items
-function handleMainMenuToggle(target) {
-    let collapses = document.querySelectorAll('.collapse');
 
-    collapses.forEach(collapse => {
-        if (collapse.id === target) {
-            collapse.classList.toggle('show');
-        } else {
-            collapse.classList.remove('show');
-        }
-    });
-}
-
-// Add event listeners to main menu items to handle collapse toggling
-document.querySelectorAll('.nav-link.dropdown-toggle').forEach(link => {
-    link.addEventListener('click', function (event) {
-        let target = link.getAttribute('data-target');
-        handleMainMenuToggle(target);
-    });
-});
-
-// Add event listener to sub menu items to prevent collapse
-document.querySelectorAll('.collapse .nav-link').forEach(link => {
-    link.addEventListener('click', function (event) {
-        event.stopPropagation(); // Prevent collapse from hiding
-    });
-});
 
 function loadContent(target) {
     var xhr = new XMLHttpRequest();
@@ -227,4 +201,224 @@ function approveRequest(requestId) {
             console.error('Error during fetch request:', error); // Debug statement
             alert('Failed to process request. Please try again later.');
         });
+}
+
+
+function markAsRead(notificationId, button) {
+    var card = document.querySelector('.notification-card[data-id="' + notificationId + '"]');
+    if (card) {
+        fetch('includes/mark_notification_as_read.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `notification_id=${notificationId}`
+        })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    card.classList.remove('unread');
+                    card.classList.add('read');
+                    button.disabled = true;
+                    button.textContent = 'Read';
+                } else {
+                    console.error('Server Error:', data.message);
+                    alert('Failed to mark notification as read. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Fetch Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+    }
+}
+
+function notifyProduct(requestId) {
+    fetch('includes/notify_product.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `request_id=${requestId}`
+    })
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Notification status updated successfully.');
+            } else {
+                alert('The notification has already been sent.');
+            }
+        })
+        .catch(error => {
+            console.error('Fetch Error:', error);
+            alert('An error occurred. Please try again.');
+        });
+}
+
+function openPdfModal(filePath) {
+    $('#pdfViewer').attr('src', filePath);
+    $('#pdfModal').modal('show');
+}
+
+$('#pdfModal').on('hidden.bs.modal', function () {
+    $('#pdfViewer').attr('src', '');
+});
+
+function approveRequest(orderId) {
+    if (confirm('Are you sure you want to approve this order?')) {
+        fetch('includes/approve_order.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ order_id: orderId })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Order approved successfully');
+                    location.reload();
+                } else {
+                    alert('Failed to approve order');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+}
+
+function completeOrder(orderId) {
+    if (confirm('Are you sure you want to mark this order as complete?')) {
+        fetch('includes/complete_order.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ order_id: orderId })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Order marked as complete');
+                    location.reload();
+                } else {
+                    alert('Failed to mark order as complete');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+}
+
+// Initialize - load home page by default
+$(document).ready(function () {
+    loadContent('home');
+});
+
+// rent management 
+
+function updateTrackingStatus(orderId, status) {
+    if (confirm('Are you sure you want to update this order status to "' + status.replace('_', ' ') + '"?')) {
+        fetch('includes/update_tracking_status.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                order_id: orderId,
+                tracking_status: status
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Order status updated successfully');
+                    if (status === 'delivered') {
+                        // If marking as delivered, also complete the order
+                        completeOrder(orderId);
+                    } else {
+                        location.reload();
+                    }
+                } else {
+                    alert('Failed to update order status');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+}
+
+function updateOrderStatus(orderId, trackingStatus) {
+    const statusText = trackingStatus.replace(/_/g, ' ');
+
+    if (confirm(`Are you sure you want to mark this order as ${statusText}?`)) {
+        fetch('includes/update_tracking_status.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                order_id: orderId,
+                tracking_status: trackingStatus
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`Order marked as ${statusText} successfully!`);
+                    location.reload();
+                } else {
+                    alert('Error updating status: ' + (data.message || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to update order status');
+            });
+    }
+}
+
+
+function updateRentalStatus(rentId, status) {
+    if (confirm(`Are you sure you want to ${status} this rental?`)) {
+        fetch(`includes/update-rental-status.php?rent_id=${rentId}&status=${status}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Status updated successfully');
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            });
+    }
+}
+
+function markDepositCollected(rentId) {
+    if (confirm('Mark deposit as collected?')) {
+        fetch(`includes/update-deposit.php?rent_id=${rentId}&status=collected`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Deposit status updated');
+                    location.reload();
+                }
+            });
+    }
+}
+
+function processDepositReturn(rentId) {
+    if (confirm('Process deposit return to user?')) {
+        fetch(`includes/update-deposit.php?rent_id=${rentId}&status=returned`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Deposit return processed');
+                    location.reload();
+                }
+            });
+    }
 }

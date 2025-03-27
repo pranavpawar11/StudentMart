@@ -13,7 +13,7 @@ $user_id = $_SESSION['user_id'];
 try {
     // Get all orders for the current user
     $query = "
-        SELECT o.order_id, o.product_id, o.status, o.order_date, o.complete_date, o.total_price, p.product_name, p.img1
+        SELECT o.order_id, o.product_id, o.status, o.tracking_status, o.order_date, o.complete_date, o.total_price, p.product_name, p.img1
         FROM orders o
         JOIN products p ON o.product_id = p.product_id
         WHERE o.buyer_id = :user_id

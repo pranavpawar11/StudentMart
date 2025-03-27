@@ -14,7 +14,9 @@ try {
         SELECT 
             o.order_id,
             o.order_date,
+            o.complete_date,
             o.status AS order_status,
+            o.tracking_status,
             o.address,
             o.total_price,
             o.payment_mode,
@@ -32,9 +34,11 @@ try {
         JOIN 
             user u ON o.buyer_id = u.user_id
         WHERE 
-            o.seller_id = :user_id AND o.status = 'completed'
+            o.seller_id = :user_id 
+            AND o.status = 'completed'
+            AND o.tracking_status = 'delivered'
         ORDER BY 
-            o.order_date DESC;
+            o.complete_date DESC;
     ";
 
     $stmt = $pdo->prepare($query);
@@ -53,8 +57,13 @@ try {
             echo '<img src="' . htmlspecialchars($order['product_image']) . '" class="card-img-top" alt="Product Image" style="height: 200px; object-fit: cover;">';
             echo '<div class="card-body d-flex flex-column">';
             echo '<h5 class="card-title">' . htmlspecialchars($order['product_name']) . '</h5>';
-            echo '<p class="card-text">' . htmlspecialchars($order['product_description']) . '</p>';
-            echo '<p class="card-text"><strong>Buyer:</strong> ' . htmlspecialchars($order['buyer_fname']) . ' ' . htmlspecialchars($order['buyer_lname']) . '</p>';
+            echo '<div class="tracking-status mb-3">';
+            echo '<small class="text-muted">Tracking Status:</small>';
+            echo '<div class="progress" style="height: 20px;">';
+            echo '<div class="progress-bar bg-success" role="progressbar" style="width: 100%">Delivered</div>';
+            echo '</div>';
+            echo '</div>';
+            echo '<p class="card-text"><strong>Completed on:</strong> ' . htmlspecialchars($order['complete_date']) . '</p>';
             echo '<button class="btn btn-primary btn-block mt-auto view-more" data-toggle="modal" data-target="#detailsModal_' . $order['order_id'] . '">View Details</button>';
             echo '</div>';
             echo '</div>';
@@ -76,8 +85,10 @@ try {
             echo '<img src="' . htmlspecialchars($order['product_image']) . '" class="img-fluid" alt="Product Image">';
             echo '</div>';
             echo '<div class="col-md-7">';
+            echo '<p><strong>Tracking Status:</strong> Delivered</p>';
             echo '<p><strong>Product Description:</strong><br>' . htmlspecialchars($order['product_description']) . '</p>';
             echo '<p><strong>Order Date:</strong> ' . htmlspecialchars($order['order_date']) . '</p>';
+            echo '<p><strong>Completed Date:</strong> ' . htmlspecialchars($order['complete_date']) . '</p>';
             echo '<p><strong>Total Price: </strong> ₹ ' . htmlspecialchars($order['total_price']) . '</p>';
             echo '<p><strong>Payment Mode: </strong> ' . htmlspecialchars($order['payment_mode']) . '</p>';
             echo '<p><strong>Buyer Name:</strong> ' . htmlspecialchars($order['buyer_fname']) . ' ' . htmlspecialchars($order['buyer_lname']) . '</p>';
@@ -97,7 +108,7 @@ try {
         echo '</div>';
         echo '</div>';
     } else {
-        echo '<div class="alert alert-info text-center">No Completed orders found</div>';
+        echo '<div class="alert alert-info text-center">No completed orders found</div>';
     }
 } catch (PDOException $e) {
     echo '<div class="alert alert-danger">Database error: ' . $e->getMessage() . '</div>';

@@ -36,7 +36,7 @@ function renderOrders(orders) {
 
         const orderStatus = document.createElement('div');
         orderStatus.classList.add('order-status', getStatusClass(order.status));
-        orderStatus.textContent = getStatusText(order.status);
+        orderStatus.textContent = getStatusText(order.tracking_status);
 
         orderHeader.appendChild(orderTitle);
         orderHeader.appendChild(orderStatus);
@@ -94,6 +94,7 @@ function getStatusClass(status) {
     switch (status) {
         case 'completed': return 'status-completed';
         case 'pending': return 'status-processing';
+        case 'approved': return 'status-processing';
         // Add more cases as needed
         default: return 'sas';
     }
@@ -101,8 +102,10 @@ function getStatusClass(status) {
 
 function getStatusText(status) {
     switch (status) {
-        case 'completed': return 'Completed';
-        case 'pending': return 'Processing';
+        case 'placed': return 'Placed';
+        case 'shipped': return 'Shipped';
+        case 'out_for_delivery' : return 'Out for Delivery';
+        case 'delivered': return 'Delivered';
         // Add more cases as needed
         default: return status;
     }

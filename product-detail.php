@@ -58,8 +58,239 @@ if (isset($_GET['id'])) {
 	<link rel="stylesheet" type="text/css" href="css/styles.css">
 	<!--===============================================================================================-->
 	<style>
+		.modal-overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background-color: rgba(0, 0, 0, 0.7);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			z-index: 9999;
+			opacity: 0;
+			visibility: hidden;
+			transition: all 0.3s ease;
+		}
 
+		.modal-overlay.active {
+			opacity: 1;
+			visibility: visible;
+		}
 
+		/* Other existing modal styles... */
+
+		/* Loading spinner styles */
+		.spinner {
+			display: inline-block;
+			width: 1rem;
+			height: 1rem;
+			border: 2px solid rgba(255, 255, 255, .3);
+			border-radius: 50%;
+			border-top-color: #fff;
+			animation: spin 1s ease-in-out infinite;
+			margin-right: 0.5rem;
+		}
+
+		@keyframes spin {
+			to {
+				transform: rotate(360deg);
+			}
+		}
+
+		/* Alert styles */
+		.custom-alert {
+			position: fixed;
+			top: 20px;
+			left: 50%;
+			transform: translateX(-50%);
+			padding: 1rem 1.5rem;
+			border-radius: 4px;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+			z-index: 10000;
+			display: flex;
+			align-items: center;
+			max-width: 90%;
+			animation: slideIn 0.3s ease-out;
+		}
+
+		.alert-success {
+			background-color: #d4edda;
+			color: #155724;
+			border: 1px solid #c3e6cb;
+		}
+
+		.alert-danger {
+			background-color: #f8d7da;
+			color: #721c24;
+			border: 1px solid #f5c6cb;
+		}
+
+		.alert-info {
+			background-color: #d1ecf1;
+			color: #0c5460;
+			border: 1px solid #bee5eb;
+		}
+
+		.alert-close {
+			margin-left: 1rem;
+			cursor: pointer;
+			font-weight: bold;
+		}
+
+		@keyframes slideIn {
+			from {
+				top: -100px;
+				opacity: 0;
+			}
+
+			to {
+				top: 20px;
+				opacity: 1;
+			}
+		}
+
+		/* Modal Container */
+		.modal-container {
+			width: 90%;
+			max-width: 500px;
+			background-color: white;
+			border-radius: 10px;
+			box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+			overflow: hidden;
+			transform: translateY(-20px);
+			transition: transform 0.3s ease;
+		}
+
+		.modal-overlay.active .modal-container {
+			transform: translateY(0);
+		}
+
+		/* Modal Header */
+		.modal-header {
+			background-color: #2c3e50;
+			color: white;
+			padding: 15px 20px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.modal-header h3 {
+			margin: 0;
+			font-size: 1.2rem;
+		}
+
+		.close-btn {
+			background: none;
+			border: none;
+			color: white;
+			font-size: 1.5rem;
+			cursor: pointer;
+			line-height: 1;
+		}
+
+		/* Modal Body */
+		.modal-body {
+			padding: 20px;
+		}
+
+		/* Plan Options */
+		.plan-options {
+			margin-bottom: 20px;
+		}
+
+		.plan-option {
+			margin-bottom: 15px;
+			display: flex;
+			align-items: center;
+		}
+
+		.plan-option input[type="radio"] {
+			margin-right: 10px;
+			width: 18px;
+			height: 18px;
+			accent-color: #2c3e50;
+		}
+
+		.plan-option label {
+			font-size: 0.95rem;
+			cursor: pointer;
+		}
+
+		/* Terms Section */
+		.terms-section {
+			border-top: 1px solid #eee;
+			padding-top: 15px;
+		}
+
+		.terms-section h4 {
+			margin: 0 0 15px 0;
+			font-size: 1rem;
+			color: #2c3e50;
+		}
+
+		.terms-content {
+			background-color: #f8f9fa;
+			padding: 15px;
+			border-radius: 5px;
+			margin-bottom: 15px;
+			max-height: 150px;
+			overflow-y: auto;
+		}
+
+		.terms-content ol {
+			padding-left: 20px;
+			margin: 0;
+		}
+
+		.terms-content li {
+			margin-bottom: 8px;
+			font-size: 0.85rem;
+			color: #555;
+		}
+
+		/* Terms Agreement */
+		.terms-agreement {
+			display: flex;
+			align-items: center;
+			margin-bottom: 15px;
+		}
+
+		.terms-agreement input[type="checkbox"] {
+			margin-right: 10px;
+			width: 18px;
+			height: 18px;
+			accent-color: #2c3e50;
+		}
+
+		.terms-agreement label {
+			font-size: 0.9rem;
+			cursor: pointer;
+		}
+
+		/* Confirm Button */
+		.confirm-btn {
+			width: 100%;
+			padding: 12px;
+			background-color: #2c3e50;
+			color: white;
+			border: none;
+			border-radius: 5px;
+			font-weight: bold;
+			cursor: pointer;
+			transition: background-color 0.3s;
+		}
+
+		.confirm-btn:hover {
+			background-color: #1a252f;
+		}
+
+		.confirm-btn:disabled {
+			background-color: #95a5a6;
+			cursor: not-allowed;
+		}
 	</style>
 </head>
 
@@ -420,7 +651,7 @@ if (isset($_GET['id'])) {
 
 
 						<!-- Add to Cart Button -->
-						<div class="flex-w flex-m p-l-100 p-t-40 respon7">
+						<div class="flex-w flex-m justify-content-between">
 							<div class="flex-m bor9 p-r-10 m-r-11">
 								<a href="#"
 									class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 js-addwish-detail tooltip100"
@@ -433,6 +664,10 @@ if (isset($_GET['id'])) {
 								class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail"
 								data-product-id="<?php echo $product_details['product_id']; ?>">
 								Add to cart
+							</button>
+							<button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04"
+								onclick="showRentalTermsModal(<?php echo $product_details['product_id'] ?>)">
+								Rent Product
 							</button>
 						</div>
 					</div>
@@ -717,6 +952,242 @@ if (isset($_GET['id'])) {
 		});
 	</script>
 	<!--===============================================================================================-->
+
+	<div class="modal-overlay" id="rentalPlanModal">
+		<div class="modal-container">
+			<div class="modal-header">
+				<h3>Choose Rental Plan</h3>
+				<button class="close-btn" aria-label="Close">&times;</button>
+			</div>
+			<div class="modal-body">
+				<div class="plan-options">
+					<div class="plan-option">
+						<input type="radio" name="rentalPlan" id="dailyPlan" value="daily" checked>
+						<label for="dailyPlan">
+							<strong>Daily Plan</strong> - ₹20/day (Min 7 days)
+						</label>
+					</div>
+					<div class="plan-option">
+						<input type="radio" name="rentalPlan" id="weeklyPlan" value="weekly">
+						<label for="weeklyPlan">
+							<strong>Weekly Plan</strong> - ₹130/week
+						</label>
+					</div>
+					<div class="plan-option">
+						<input type="radio" name="rentalPlan" id="monthlyPlan" value="monthly">
+						<label for="monthlyPlan">
+							<strong>Monthly Plan</strong> - ₹200/month
+						</label>
+					</div>
+				</div>
+
+				<div class="terms-section">
+					<h4>Rental Terms & Conditions</h4>
+					<div class="terms-content">
+						<ol>
+							<li>₹500 refundable deposit required (paid during delivery)</li>
+							<li>Rental period begins upon delivery confirmation</li>
+							<li>Minimum 7 days rental for daily plan</li>
+							<li>₹50/day late return penalty</li>
+							<li>Damages may result in deposit deduction</li>
+						</ol>
+					</div>
+					<div class="terms-agreement">
+						<input type="checkbox" id="agreeTerms">
+						<label for="agreeTerms">
+							I agree to the terms and conditions
+						</label>
+					</div>
+					<button class="confirm-btn" id="confirmRentBtn" disabled>
+						Confirm Rental Request
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<script>
+		// Global variables
+		let currentProductId = null;
+
+		// Show rental terms modal
+		function showRentalTermsModal(productId) {
+			currentProductId = productId;
+			document.getElementById('rentalPlanModal').classList.add('active');
+			document.body.style.overflow = 'hidden';
+
+			// Reset form state
+			document.getElementById('dailyPlan').checked = true;
+			document.getElementById('agreeTerms').checked = false;
+			document.getElementById('confirmRentBtn').disabled = true;
+		}
+
+		// Hide modal
+		function hideModal() {
+			document.getElementById('rentalPlanModal').classList.remove('active');
+			document.body.style.overflow = '';
+		}
+
+		// Show alert message
+		function showAlert(type, message, duration = 5000) {
+			const alertDiv = document.createElement('div');
+			alertDiv.className = `custom-alert alert-${type}`;
+			alertDiv.innerHTML = `
+	  ${message}
+	  <span class="alert-close">&times;</span>
+	`;
+
+			document.body.appendChild(alertDiv);
+
+			// Close button functionality
+			alertDiv.querySelector('.alert-close').addEventListener('click', () => {
+				alertDiv.remove();
+			});
+
+			// Auto-remove after duration
+			if (duration) {
+				setTimeout(() => {
+					alertDiv.remove();
+				}, duration);
+			}
+
+			return alertDiv;
+		}
+
+		// Handle rental submission (kept exactly as you requested)
+		function proceedToRent() {
+			const planType = document.querySelector('input[name="rentalPlan"]:checked').value;
+			const btn = document.getElementById('confirmRentBtn');
+
+			console.log("Submitting rental for product:", currentProductId, "with plan:", planType);
+
+			// Show loading state
+			btn.innerHTML = '<span class="spinner"></span> Processing...';
+			btn.disabled = true;
+
+			fetch('./php/handle-rental.php', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					product_id: currentProductId,
+					plan_type: planType
+				})
+			})
+				.then(async response => {
+					console.log("Raw response:", response);
+					const text = await response.text();
+					console.log("Response text:", text);
+
+					try {
+						const data = JSON.parse(text);
+						console.log("Parsed JSON:", data);
+
+						if (!data) {
+							throw new Error("Empty response from server");
+						}
+
+						if (!response.ok) {
+							throw new Error(data.message || "Request failed");
+						}
+
+						return data;
+					} catch (e) {
+						console.error("Failed to parse JSON:", e);
+						throw new Error(text || "Invalid server response");
+					}
+				})
+				.then(data => {
+					console.log("Success data:", data);
+
+					// Show success alert
+					const successAlert = showAlert('success', data.message || 'Rental request successful');
+
+					// Add redirect message after 1 second
+					setTimeout(() => {
+						successAlert.innerHTML = `
+			${data.message || 'Rental request successful'}
+			<br><small>Redirecting to rental page...</small>
+			<span class="alert-close">&times;</span>
+		  `;
+					}, 1000);
+
+					// Redirect after 2 seconds
+					setTimeout(() => {
+						window.location.href = './rent-products.php';
+					}, 2000);
+				})
+				.catch(error => {
+					console.error("Error:", error);
+					const cleanError = error.message.replace(/<[^>]*>?/gm, '');
+					showAlert('danger', cleanError || 'An unknown error occurred');
+				})
+				.finally(() => {
+					btn.innerHTML = 'Confirm Rental Request';
+					btn.disabled = false;
+				});
+		}
+
+		// Initialize modal when DOM is loaded
+		document.addEventListener('DOMContentLoaded', function () {
+			const modal = document.getElementById('rentalPlanModal');
+			const closeBtn = document.querySelector('.close-btn');
+			const agreeTerms = document.getElementById('agreeTerms');
+			const confirmBtn = document.getElementById('confirmRentBtn');
+
+			// Close modal when clicking close button
+			closeBtn.addEventListener('click', hideModal);
+
+			// Close modal when clicking outside the modal content
+			modal.addEventListener('click', function (e) {
+				if (e.target === modal) {
+					hideModal();
+				}
+			});
+
+			// Enable/disable confirm button based on terms agreement
+			agreeTerms.addEventListener('change', function () {
+				confirmBtn.disabled = !this.checked;
+			});
+
+			// Handle confirm button click
+			confirmBtn.addEventListener('click', proceedToRent);
+
+			// Close modal when pressing Escape key
+			document.addEventListener('keydown', function (e) {
+				if (e.key === 'Escape' && modal.classList.contains('active')) {
+					hideModal();
+				}
+			});
+
+			// Calculate and display rental estimate when plan changes
+			const planRadios = document.querySelectorAll('input[name="rentalPlan"]');
+			planRadios.forEach(radio => {
+				radio.addEventListener('change', function () {
+					updateRentalEstimate(this.value);
+				});
+			});
+
+			// Function to calculate and display rental estimate
+			function updateRentalEstimate(plan) {
+				let estimate = '';
+				switch (plan) {
+					case 'daily':
+						estimate = 'Estimated total for 7 days: ₹140 (₹20 × 7 days) + ₹500 deposit';
+						break;
+					case 'weekly':
+						estimate = 'Estimated total: ₹130 (weekly rate) + ₹500 deposit';
+						break;
+					case 'monthly':
+						estimate = 'Estimated total: ₹200 (monthly rate) + ₹500 deposit';
+						break;
+				}
+				console.log(estimate);
+			}
+		});
+	</script>
 	<script src="js/main.js"></script>
 	<script src="js/add_to_cart.js"></script>
 	<script src="js/whishlist.js"></script>

@@ -13,22 +13,19 @@ try {
     $query = "
         SELECT 
             o.order_id,
-            o.product_id,
-            o.buyer_id,
-            o.seller_id,
+            o.order_date,
             o.status AS order_status,
             o.tracking_status,
-            o.payment_mode,
-            o.order_date,
-            o.complete_date,
             o.address,
-            o.pincode,
             o.total_price,
+            o.payment_mode,
             p.product_name,
             p.product_description,
             p.product_price,
             p.img1 AS product_image,
-            u.phone AS buyer_phone
+            u.phone AS buyer_phone,
+            u.fname AS buyer_fname,
+            u.lname AS buyer_lname
         FROM 
             orders o
         JOIN 
@@ -37,8 +34,8 @@ try {
             user u ON o.buyer_id = u.user_id
         WHERE 
             o.seller_id = :user_id 
-            AND o.status = 'pending'
-            AND o.tracking_status = 'placed'
+            AND o.status = 'approved'
+            AND o.tracking_status IN ('shipped', 'out_for_delivery')
         ORDER BY 
             o.order_date DESC;
     ";
@@ -50,16 +47,15 @@ try {
 
     if ($results) {
         echo '<div class="container">';
-        echo '<h2 class="text-center mb-4">Pending Orders</h2>';
+        echo '<h2 class="text-center mb-4">Approved Orders</h2>';
         echo '<div class="row">';
 
         foreach ($results as $order) {
             echo '<div class="col-md-4 mb-4">';
-            echo '<div class="card border-light shadow">';
+            echo '<div class="card border-light shadow-sm h-100">';
             echo '<img src="' . htmlspecialchars($order['product_image']) . '" class="card-img-top" alt="Product Image" style="height: 200px; object-fit: cover;">';
-            echo '<div class="card-body">';
+            echo '<div class="card-body d-flex flex-column">';
             echo '<h5 class="card-title">' . htmlspecialchars($order['product_name']) . '</h5>';
-            echo '<p class="card-text">' . htmlspecialchars($order['product_description']) . '</p>';
             echo '<div class="tracking-status mb-3">';
             echo '<small class="text-muted">Tracking Status:</small>';
             echo '<div class="progress" style="height: 20px;">';
@@ -77,13 +73,7 @@ try {
             echo '</div>';
             echo '</div>';
             
-            echo '<div class="d-flex justify-content-between align-items-center">';
-            echo '<button class="btn btn-primary view-more" data-toggle="modal" data-target="#detailsModal_' . $order['order_id'] . '">View More</button>';
-             echo '<button class="btn btn-success ship-order" 
-            onclick="updateOrderStatus(' . $order['order_id'] . ', \'shipped\')">
-            Mark as Shipped
-          </button>';
-            echo '</div>';
+            echo '<button class="btn btn-primary btn-block mt-auto view-more" data-toggle="modal" data-target="#detailsModal_' . $order['order_id'] . '">View Details</button>';
             echo '</div>';
             echo '</div>';
             echo '</div>';
@@ -108,24 +98,26 @@ try {
             echo '<p><strong>Product Description:</strong><br>' . htmlspecialchars($order['product_description']) . '</p>';
             echo '<p><strong>Order Date:</strong> ' . htmlspecialchars($order['order_date']) . '</p>';
             echo '<p><strong>Total Price: </strong> ₹ ' . htmlspecialchars($order['total_price']) . '</p>';
+            echo '<p><strong>Payment Mode: </strong> ' . htmlspecialchars($order['payment_mode']) . '</p>';
+            echo '<p><strong>Buyer Name:</strong> ' . htmlspecialchars($order['buyer_fname']) . ' ' . htmlspecialchars($order['buyer_lname']) . '</p>';
             echo '<p><strong>Buyer Address:</strong> ' . htmlspecialchars($order['address']) . '</p>';
-            echo '<p><strong>Pincode:</strong> ' . htmlspecialchars($order['pincode']) . '</p>';
             echo '<p><strong>Buyer Phone:</strong> ' . htmlspecialchars($order['buyer_phone']) . '</p>';
-            echo '<p><strong>Payment Mode:</strong> ' . htmlspecialchars($order['payment_mode']) . '</p>';
-            if ($order['payment_mode'] == 'online') {
-                echo '<p><strong>Payment Status:</strong> Done</p>';
-            } else {
-                echo '<p><strong>Payment Status:</strong> Pending (COD)</p>';
-            }
             echo '</div>';
             echo '</div>';
             echo '</div>';
             echo '<div class="modal-footer">';
             echo '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>';
-             echo '<button class="btn btn-success ship-order" 
-            onclick="updateOrderStatus(' . $order['order_id'] . ', \'shipped\')">
-            Mark as Shipped
-          </button>';
+            if ($order['tracking_status'] === 'shipped') {
+                echo '<button class="btn btn-warning" 
+                        onclick="updateOrderStatus(' . $order['order_id'] . ', \'out_for_delivery\')">
+                        Mark as Out for Delivery
+                      </button>';
+            } elseif ($order['tracking_status'] === 'out_for_delivery') {
+                echo '<button class="btn btn-success" 
+                        onclick="updateOrderStatus(' . $order['order_id'] . ', \'delivered\')">
+                        Mark as Delivered
+                      </button>';
+            }
             echo '</div>';
             echo '</div>';
             echo '</div>';
@@ -135,7 +127,7 @@ try {
         echo '</div>';
         echo '</div>';
     } else {
-        echo '<div class="alert alert-info text-center">No pending orders found</div>';
+        echo '<div class="alert alert-info text-center">No approved orders found</div>';
     }
 } catch (PDOException $e) {
     echo '<div class="alert alert-danger">Database error: ' . $e->getMessage() . '</div>';

@@ -2,17 +2,34 @@
 // Include the database connection file
 include('php/cart-wishlist-notification.php');
 include('php/conn.php');
-
-// Check if user is logged in (user_id should be set in the session)
-// session_start();
-// if (!isset($_SESSION['user_id'])) {
-// 	// Redirect the user to the login page or show an error message
-// 	header('Location: login.php');
-// 	exit;
-// }
-
 ?>
+<?php
+if (session_status() == PHP_SESSION_NONE) {
+	session_start();
+}
 
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+	header('Location: login.php');
+	exit;
+}
+
+// Get user rentals from database
+try {
+	$user_id = $_SESSION['user_id'];
+	$stmt = $pdo->prepare("SELECT r.*, p.product_name, p.img1 
+                          FROM rentals r
+                          JOIN products p ON r.product_id = p.product_id
+                          WHERE r.user_id = :user_id");
+	$stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+	$stmt->execute();
+	$rentals = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+	$rentals = [];
+	// You might want to log this error
+	error_log("Database error: " . $e->getMessage());
+}
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -51,6 +68,131 @@ include('php/conn.php');
 	<link rel="stylesheet" type="text/css" href="css/styles.css">
 	<link rel="stylesheet" href="css/myOrders.css">
 	<!--===============================================================================================-->
+	<style>
+		/* Enhanced Rental Section Styles */
+		.rental-container {
+			background-color: #f8f9fa;
+			padding: 20px;
+			border-radius: 12px;
+		}
+
+		.rental-card {
+			border: 1px solid #e0e0e0;
+			border-radius: 12px;
+			overflow: hidden;
+			transition: all 0.3s ease;
+			background-color: white;
+			margin-bottom: 20px;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+		}
+
+		.rental-card:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+		}
+
+		.rental-card img {
+			height: 100%;
+			object-fit: cover;
+			transition: transform 0.3s ease;
+		}
+
+		.rental-card:hover img {
+			transform: scale(1.05);
+		}
+
+		.rental-progress .progress {
+			height: 10px;
+			border-radius: 5px;
+			background-color: #e9ecef;
+		}
+
+		.rental-progress .progress-bar {
+			background: linear-gradient(to right, #2c3e50, #3498db);
+			transition: width 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+		}
+
+		.status-labels span {
+			font-size: 0.8rem;
+			font-weight: 500;
+			color: #6c757d;
+			position: relative;
+			padding-left: 20px;
+			transition: color 0.3s ease;
+		}
+
+		.status-labels span::before {
+			content: "";
+			position: absolute;
+			left: 0;
+			top: 50%;
+			transform: translateY(-50%);
+			width: 12px;
+			height: 12px;
+			border-radius: 50%;
+			background-color: #e0e0e0;
+			transition: background-color 0.3s ease;
+		}
+
+		.status-labels .text-primary {
+			color: #2c3e50;
+			font-weight: 600;
+		}
+
+		.status-labels .text-primary::before {
+			background-color: #2c3e50;
+			box-shadow: 0 0 10px rgba(44, 62, 80, 0.4);
+		}
+
+		.rental-details {
+			background-color: #f1f3f5;
+			border-radius: 8px;
+			padding: 15px;
+			margin-top: 15px;
+		}
+
+		.btn-outline-dark {
+			border-width: 2px;
+			transition: all 0.3s ease;
+		}
+
+		.btn-outline-dark:hover {
+			background-color: #2c3e50;
+			color: white !important;
+		}
+
+		.btn-link.text-danger {
+			transition: color 0.3s ease;
+		}
+
+		.btn-link.text-danger:hover {
+			color: #dc3545 !important;
+			text-decoration: underline;
+		}
+
+		.badge {
+			transition: background-color 0.3s ease;
+		}
+
+		.badge:hover {
+			background-color: #ffc107 !important;
+		}
+
+		/* Responsive Adjustments */
+		@media (max-width: 768px) {
+			.rental-card .col-md-3 {
+				max-height: 250px;
+			}
+
+			.rental-details {
+				text-align: center;
+			}
+
+			.rental-details .col-md-4 {
+				margin-bottom: 10px;
+			}
+		}
+	</style>
 </head>
 
 <body class="animsition">
@@ -127,9 +269,9 @@ include('php/conn.php');
 								<a href="my-orders.php">My Orders</a>
 							</li>
 
-							<li>
-								<a href="rent-products.php">Rent</a>
-							</li>
+							<!-- <li>
+								<a href="dashboard.php">Dashboard</a>
+							</li> -->
 
 						</ul>
 					</div>
@@ -226,7 +368,7 @@ include('php/conn.php');
 					<a href="shoping-cart.php">Cart</a>
 				</li>
 
-				<li  class="active-menu">
+				<li class="active-menu">
 					<a href="my-orders.php">My Orders</a>
 				</li>
 			</ul>
@@ -278,7 +420,7 @@ include('php/conn.php');
 
 
 	<!-- breadcrumb -->
-	<div class="container">
+	<div class="container py-3">
 		<div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
 			<a href="index.php" class="stext-109 cl8 hov-cl1 trans-04">
 				Home
@@ -286,65 +428,174 @@ include('php/conn.php');
 			</a>
 
 			<span class="stext-109 cl4">
-				My orders
+				Rent
 			</span>
 		</div>
 	</div>
 
-
-	<!-- Shoping Cart -->
-	<!-- <div class="orders-container">
-
-		<div class="order-card">
-			<img src="/api/placeholder/150/150" alt="Product Image" class="order-image">
-			<div class="order-details">
-				<div class="order-header">
-					<h3>Advanced Programming Textbook</h3>
-					<div class="order-status status-completed">Completed</div>
-				</div>
-				<div class="order-info">
-					<div>
-						<p><strong>Order Date:</strong> 15 November 2024</p>
-						<p><strong>Delivery Date:</strong> 22 November 2024</p>
-						<p><strong>Total Amount:</strong> $99.99</p>
-					</div>
-					<div class="order-actions">
-						<button class="btn btn-view" onclick="viewOrder()">View Order</button>
-						<button class="btn btn-details" onclick="showOrderDetails()">Order Details</button>
-					</div>
+	<!-- Add this after the breadcrumb section -->
+	<div class="container py-3">
+		<div class="row">
+			<div class="col-12">
+				<!-- <h3 class="my-4">My Rentals</h3> -->
+				<div class="rental-container" id="rentalsContainer">
+					<?php if (empty($rentals)): ?>
+						<div class="alert alert-info">
+							You don't have any rental items yet.
+						</div>
+					<?php else: ?>
+						<?php foreach ($rentals as $rental):
+							$status_progress = [
+								'requested' => 0,
+								'approved' => 33,
+								'in_transit' => 33,
+								'delivered' => 66,
+								'return_initiated' => 80,
+								'completed' => 100
+							];
+							$plan_rates = [
+								'daily' => 20,   // Per day rate
+								'weekly' => 130, // Per week rate
+								'monthly' => 200 // Per month rate
+							];
+							
+							// Plan-specific discount calculations
+							$plan_discounts = [
+								'daily' => 1,    // No discount for daily
+								'weekly' => 0.9, // 10% discount for weekly
+								'monthly' => 1 // 20% discount for monthly
+							];
+							
+							// Calculate total days of rental
+							$rental_start = strtotime($rental['start_date']);
+							$rental_end = strtotime($rental['end_date']);
+							$days_rented = max(1, ceil(($rental_end - $rental_start) / (60 * 60 * 24)));
+							
+							// Calculate remaining days
+							$current_time = time();
+							$remaining_days = max(0, ceil(($rental_end - $current_time) / (60 * 60 * 24)));
+							
+							// Comprehensive cost calculation
+							switch ($rental['plan_type']) {
+								case 'daily':
+									// Simple daily calculation
+									$total_cost = $days_rented * $plan_rates['daily'];
+									break;
+								
+								case 'weekly':
+									// Calculate full weeks and remaining days
+									$weeks = floor($days_rented / 7);
+									$remaining_rental_days = $days_rented % 7;
+									
+									$weekly_cost = $weeks * $plan_rates['weekly'];
+									$daily_cost = $remaining_rental_days * $plan_rates['daily'];
+									
+									$total_cost = $weekly_cost + $daily_cost;
+									break;
+								
+								case 'monthly':
+									// Calculate full months and remaining days
+									$months = floor($days_rented / 30);
+									$remaining_rental_days = $days_rented % 30;
+									
+									$monthly_cost = $months * $plan_rates['monthly'];
+									$daily_cost = $remaining_rental_days * $plan_rates['daily'];
+									
+									$total_cost = $monthly_cost + $daily_cost;
+									break;
+								
+								default:
+									// Fallback to daily calculation
+									$total_cost = $days_rented * $plan_rates['daily'];
+							}
+							
+							// Apply plan-specific discount
+							$total_cost = round($total_cost * $plan_discounts[$rental['plan_type']]);
+							
+							// Additional context for rental duration
+							$rental_duration_details = [
+								'total_days' => $days_rented,
+								'remaining_days' => $remaining_days,
+								'start_date' => date('Y-m-d', $rental_start),
+								'end_date' => date('Y-m-d', $rental_end)
+							];
+							?>
+							<div class="rental-card mb-4">
+								<div class="card shadow-sm">
+									<div class="row g-0">
+										<div class="col-md-3">
+											<img src="<?= htmlspecialchars($rental['img1']) ?>" class="img-fluid rounded-start"
+												alt="Product Image">
+										</div>
+										<div class="col-md-9">
+											<div class="card-body">
+												<div class="d-flex justify-content-between align-items-center mb-3">
+													<h5 class="card-title"><?= htmlspecialchars($rental['product_name']) ?></h5>
+													<span class="badge bg-warning text-dark">
+														<?= ucfirst($rental['plan_type']) ?> Plan
+													</span>
+												</div>
+												<div class="rental-progress mb-3">
+													<div class="progress">
+														<div class="progress-bar" role="progressbar"
+															style="width: <?= $status_progress[$rental['rental_status']] ?>%">
+														</div>
+													</div>
+													<div class="status-labels d-flex justify-content-between mt-2">
+														<?php foreach (['requested', 'approved', 'delivered', 'completed'] as $status): ?>
+															<span
+																class="<?= $rental['rental_status'] == $status ? 'text-primary' : 'text-muted' ?>">
+																<?= ucfirst($status) ?>
+															</span>
+														<?php endforeach; ?>
+													</div>
+												</div>
+												<div class="rental-details">
+													<div class="row">
+														<div class="col-md-4">
+															<p class="mb-1 py-2 "><strong>Start Date:</strong>
+																<?= htmlspecialchars($rental['start_date']) ?>
+															</p>
+															<p class="mb-1 py-2"><strong>Remaining Days:</strong>
+																<?= $remaining_days ?> days
+															</p>
+														</div>
+														<div class="col-md-4">
+															<p class="mb-1 py-2"><strong>Deposit Status:</strong>
+																<span
+																	class="text-<?= $rental['deposit_status'] == 'collected' ? 'success' : 'danger' ?>">
+																	<?= ucfirst($rental['deposit_status']) ?>
+																</span>
+															</p>
+															<p class="mb-1 py-2"><strong>Total Rental Cost:</strong>
+																₹<?= $total_cost ?>
+															</p>
+														</div>
+														<div class="col-md-4">
+															<?php if ($rental['rental_status'] == 'delivered'): ?>
+																<button class="btn btn-outline-dark btn-sm"
+																	onclick="showReturnRequest(<?= $rental['rent_id'] ?>)">
+																	<i class="fas fa-undo"></i> Initiate Return
+																</button>
+															<?php endif; ?>
+															<button class="btn btn-link text-danger btn-sm"
+																onclick="showDepositAlert(<?= $rental['rent_id'] ?>)">
+																<i class="fas fa-exclamation-circle"></i> Deposit Alert
+															</button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						<?php endforeach; ?>
+					<?php endif; ?>
 				</div>
 			</div>
 		</div>
-
-		<div class="order-card">
-			<img src="/api/placeholder/150/150" alt="Product Image" class="order-image">
-			<div class="order-details">
-				<div class="order-header">
-					<h3>Data Science Handbook</h3>
-					<div class="order-status status-processing">Processing</div>
-				</div>
-				<div class="order-info">
-					<div>
-						<p><strong>Order Date:</strong> 10 November 2024</p>
-						<p><strong>Expected Delivery:</strong> 25 November 2024</p>
-						<p><strong>Total Amount:</strong> $49.50</p>
-					</div>
-					<div class="order-actions">
-						<button class="btn btn-view" onclick="viewOrder()">View Order</button>
-						<button class="btn btn-details" onclick="showOrderDetails()">Order Details</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div> -->
-
-
-	<div class="orders-container" id="ordersContainer">
-		<!-- Orders will be inserted here -->
 	</div>
-
-
-
 	<!-- Footer -->
 	<footer class="student-mart-footer">
 		<div class="footer-container">
@@ -472,6 +723,62 @@ include('php/conn.php');
 	<script src="js/whishlist.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script src="vendor/sweetalert/sweetalert.min.js"></script>
+
+	<script>
+		// In fetch_my_orders.js
+		// Update these functions to use proper error handling
+		function showReturnRequest(rentId) {
+			if (confirm('Are you sure you want to initiate return for this rental?')) {
+				fetch(`php/update-rental.php?action=return_initiated&rent_id=${rentId}`)
+					.then(response => {
+						if (!response.ok) throw new Error('Network response was not ok');
+						return response.json();
+					})
+					.then(data => {
+						if (data.success) {
+							// alert('Return request initiated successfully');
+							Swal.fire('Return request initiated successfully', 'success');
+							location.reload();
+						} else {
+							throw new Error(data.message || 'Request failed');
+						}
+					})
+					.catch(error => {
+						Swal.fire('Error: ' + error.message, 'danger');
+						// alert('Error: ' + error.message);
+					});
+			}
+		}
+
+		function showDepositAlert(rentId) {
+			if (confirm('Report missing deposit for this rental?')) {
+				fetch(`php/update-rental.php?action=deposit_alert&rent_id=${rentId}`)
+					.then(response => {
+						if (!response.ok) throw new Error('Network response was not ok');
+						return response.json();
+					})
+					.then(data => {
+						if (data.success) {
+							// alert('Deposit ticket created. We will contact you shortly.');
+							Swal.fire('Deposit ticket created. We will contact you shortly.', 'success');
+						} else {
+							throw new Error(data.message || 'Request failed');
+						}
+					})
+					.catch(error => {
+						// alert('Error: ' + error.message);
+						Swal.fire('Error: ' + error.message, 'danger');
+					});
+			}
+		}
+
+		function raiseDepositTicket() {
+			// API call to raise deposit ticket
+			Swal.fire('Ticket Raised!', 'Our team will contact you within 24 hours.', 'success');
+		}
+	</script>
+
+
 </body>
 
 </html>
