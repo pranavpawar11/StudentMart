@@ -125,55 +125,60 @@ if (!isset($_SESSION['user_id'])) {
             <i class="fas fa-wallet mr-2"></i> Deposit Tracking
           </a>
 
-        </div>
-        <!-- Buyer Requests -->
-        <a href="#" class="nav-link text-white py-3 px-4 dropdown-toggle" data-toggle="collapse"
-          data-target="#buyerRequestMenu" aria-expanded="false">
-          <i class="fas fa-clipboard-list mr-2"></i> Buyer Requests
-        </a>
-        <div id="buyerRequestMenu" class="collapse">
-          <a href="#" class="nav-link text-white py-3 px-5" data-target="user_completed_requests"
-            onclick="loadContent('user_completed_requests')">
-            <i class="fas fa-check-double mr-2"></i> Completed
+          <a href="#" class="nav-link text-white py-3 px-4 dropdown-toggle" data-toggle="collapse"
+            data-target="#buyerRequestMenu" aria-expanded="false">
+            <i class="fas fa-clipboard-list mr-2"></i> Buyer Requests
           </a>
-          <a href="#" class="nav-link text-white py-3 px-5" data-target="user_approved_requests"
-            onclick="loadContent('user_approved_requests')">
-            <i class="fas fa-check mr-2"></i> Approved
-          </a>
-          <a href="#" class="nav-link text-white py-3 px-5" data-target="user_pending_requests"
-            onclick="loadContent('user_pending_requests')">
-            <i class="fas fa-clock mr-2"></i> Pending
-          </a>
-          <!-- <a href="#" class="nav-link text-white py-3 px-5" data-target="declined_requests"
+          <div id="buyerRequestMenu" class="collapse">
+            <a href="#" class="nav-link text-white py-3 px-5" data-target="user_completed_requests"
+              onclick="loadContent('user_completed_requests')">
+              <i class="fas fa-check-double mr-2"></i> Completed
+            </a>
+            <a href="#" class="nav-link text-white py-3 px-5" data-target="user_approved_requests"
+              onclick="loadContent('user_approved_requests')">
+              <i class="fas fa-check mr-2"></i> Approved
+            </a>
+            <a href="#" class="nav-link text-white py-3 px-5" data-target="user_pending_requests"
+              onclick="loadContent('user_pending_requests')">
+              <i class="fas fa-clock mr-2"></i> Pending
+            </a>
+            <!-- <a href="#" class="nav-link text-white py-3 px-5" data-target="declined_requests"
             onclick="loadContent('user_declined_requests')">
             <i class="fas fa-times mr-2"></i> Declined
           </a> -->
+          </div>
         </div>
+        <!-- Buyer Requests -->
+
         <!-- User Only Sections -->
         <div class="user-only">
-          <!-- My Requests -->
           <a href="#" class="nav-link text-white py-3 px-4 dropdown-toggle" data-toggle="collapse"
-            data-target="#myRequestMenu" aria-expanded="false">
-            <i class="fas fa-clipboard-list mr-2"></i> My Requests
+            data-target="#myRequest" aria-expanded="false">
+            <i class="fas fa-clipboard-list mr-2"></i> Buyers Requests
           </a>
-          <div id="myRequestMenu" class="collapse">
-            <a href="#" class="nav-link text-white py-3 px-5" data-target="my_completed_requests"
-              onclick="loadContent('my_completed_requests')">
+          <div id="myRequest" class="collapse">
+            <a href="#" class="nav-link text-white py-3 px-5" data-target="seller_completed_requests"
+              onclick="loadContent('seller_completed_requests')">
               <i class="fas fa-check-circle mr-2"></i> Completed
             </a>
-            <a href="#" class="nav-link text-white py-3 px-5" data-target="my_approved_requests"
-              onclick="loadContent('my_approved_requests')">
+            <a href="#" class="nav-link text-white py-3 px-5" data-target="seller_approved_requests"
+              onclick="loadContent('seller_approved_requests')">
               <i class="fas fa-thumbs-up mr-2"></i> Approved
             </a>
-            <a href="#" class="nav-link text-white py-3 px-5" data-target="my_pending_requests"
-              onclick="loadContent('my_pending_requests')">
+            <a href="#" class="nav-link text-white py-3 px-5" data-target="seller_pending_requests"
+              onclick="loadContent('seller_pending_requests')">
               <i class="fas fa-hourglass-half mr-2"></i> Pending
             </a>
-            <a href="#" class="nav-link text-white py-3 px-5" data-target="my_declined_requests"
+            <!-- <a href="#" class="nav-link text-white py-3 px-5" data-target="my_declined_requests"
               onclick="loadContent('my_declined_requests')">
               <i class="fas fa-times-circle mr-2"></i> Declined
-            </a>
+            </a> -->
           </div>
+
+          <a href="#" class="nav-link text-white py-3 px-4" data-target="my_requests"
+            onclick="loadContent('my_requests')">
+            <i class="fas fa-wallet mr-2"></i> My Requests
+          </a>
         </div>
 
         <!-- Common Sections -->
@@ -232,6 +237,102 @@ if (!isset($_SESSION['user_id'])) {
     </div>
   </div>
 
+
+  <script>
+    function payPlatformFee(orderId, totalPrice) {
+      const platformFee = Math.ceil(totalPrice * 0.05); // 5% of total price
+
+      // Send platform fee data to platform_fee_payment.php using fetch
+      fetch("platform_fee_payment.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          type: "platform_fee",
+          orderId: orderId,
+          platformFee: platformFee
+        })
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log("Platform fee payment response:", data);
+          if (data.orderId) {
+            startPlatformFeePayment(data.orderId, platformFee);
+          } else {
+            console.error("Failed to create platform fee order. Please try again.");
+            alert("Failed to create platform fee order. Please try again.");
+          }
+        })
+        .catch(error => {
+          console.error("Error in fetch request:", error);
+          alert("Error processing platform fee payment. Please try again.");
+        });
+    }
+
+    function startPlatformFeePayment(orderId, platformFee) {
+      const api_key = "rzp_test_8k9Y3Mmk6y9sy0";
+
+      var options = {
+        key: api_key,
+        amount: platformFee * 100, // Convert to paise
+        currency: "INR",
+        name: "StudentMart",
+        description: "Platform fee payment (5%)",
+        image: "https://cdn.razorpay.com/logos/GhRQcyean79PqE_medium.png",
+        order_id: orderId,
+        theme: {
+          color: "#738276"
+        },
+        handler: function (response) {
+          // Submit the form with payment details
+          document.getElementById("razorpay-form").razorpay_payment_id.value = response.razorpay_payment_id;
+          document.getElementById("razorpay-form").razorpay_order_id.value = response.razorpay_order_id;
+          document.getElementById("razorpay-form").razorpay_signature.value = response.razorpay_signature;
+          document.getElementById("razorpay-form").submit();
+        },
+        callback_url: "platform_fee_success.php"
+      };
+
+      var rzp = new Razorpay(options);
+      rzp.open();
+    }
+
+    function openWhatsApp(phone, orderInfo) {
+      var message = "Hello! Im contacting you regarding your order on StudentMart: " + orderInfo;
+      var whatsappURL = "https://wa.me/" + phone + "?text=" + encodeURIComponent(message);
+      window.open(whatsappURL, "_blank");
+    }
+  </script>
+
+  <script>
+    function updateOrderStatus(orderId, status) {
+      if (confirm("Are you sure you want to update this order status to " + status + "?")) {
+        fetch("update_order_status.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: "order_id=" + orderId + "&status=" + status
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              alert("Order status updated successfully!");
+              location.reload();
+            } else {
+              alert("Failed to update order status: " + data.message);
+            }
+          })
+          .catch(error => {
+            console.error("Error:", error);
+            alert("An error occurred while updating the order status.");
+          });
+      }
+    }
+  </script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <!-- Scripts -->
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
