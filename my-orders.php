@@ -78,6 +78,10 @@ include('php/conn.php');
 							Help & FAQs
 						</a> -->
 
+						<a href="dashboard.php" class="flex-c-m trans-04 p-lr-25">
+							Dashboard
+						</a>
+
 						<a href="profile.php" class="flex-c-m trans-04 p-lr-25">
 							My Account
 						</a>

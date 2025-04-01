@@ -75,7 +75,9 @@ include './php/conn.php'; // Include the conn.php file to establish a database c
                         <!-- <a href="#" class="flex-c-m trans-04 p-lr-25">
                             Help & FAQs
                         </a> -->
-
+                        <a href="dashboard.php" class="flex-c-m trans-04 p-lr-25">
+                            Dashboard
+                        </a>
                         <a href="profile.php" class="flex-c-m trans-04 p-lr-25">
                             My Account
                         </a>
@@ -124,6 +126,10 @@ include './php/conn.php'; // Include the conn.php file to establish a database c
 
                             <li>
                                 <a href="my-orders.php">My Orders</a>
+                            </li>
+
+                            <li>
+                                <a href="rent-products.php">Rent</a>
                             </li>
 
                             <!-- <li>

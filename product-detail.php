@@ -6,12 +6,15 @@ include('php/cart-wishlist-notification.php');
 // Query to fetch product information from the database
 
 if (isset($_GET['id'])) {
-	// Fetch product details based on the product ID
+	// Fetch product details along with the uploader's role
 	$productId = $_GET['id'];
 
-	$query = "SELECT * FROM products WHERE product_id = :product_id"; // Change the condition as per your requirement
+	$query = "SELECT p.*, u.role 
+              FROM products p
+              JOIN user u ON p.seller_id = u.user_id
+              WHERE p.product_id = :product_id";
 	$stmt = $pdo->prepare($query);
-	$stmt->bindParam(':product_id', $productId); // Corrected variable name
+	$stmt->bindParam(':product_id', $productId);
 	$stmt->execute();
 	$product_details = $stmt->fetch(PDO::FETCH_ASSOC);
 }
@@ -318,7 +321,9 @@ if (isset($_GET['id'])) {
 						<!-- <a href="#" class="flex-c-m trans-04 p-lr-25">
 							Help & FAQs
 						</a> -->
-
+						<a href="dashboard.php" class="flex-c-m trans-04 p-lr-25">
+							Dashboard
+						</a>
 						<a href="profile.php" class="flex-c-m trans-04 p-lr-25">
 							My Account
 						</a>
@@ -369,6 +374,9 @@ if (isset($_GET['id'])) {
 								<a href="my-orders.php">My Orders</a>
 							</li>
 
+							<li>
+								<a href="rent-products.php">Rent</a>
+							</li>
 							<!-- <li>
 								<a href="dashboard.php">Dashboard</a>
 							</li> -->
@@ -665,10 +673,13 @@ if (isset($_GET['id'])) {
 								data-product-id="<?php echo $product_details['product_id']; ?>">
 								Add to cart
 							</button>
-							<button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04"
-								onclick="showRentalTermsModal(<?php echo $product_details['product_id'] ?>)">
-								Rent Product
-							</button>
+
+							<?php if (isset($product_details['role']) && $product_details['role'] === 'admin'): ?>
+								<button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04"
+									onclick="showRentalTermsModal(<?php echo $product_details['product_id'] ?>)">
+									Rent Product
+								</button>
+							<?php endif; ?>
 						</div>
 					</div>
 				</div>

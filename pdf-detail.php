@@ -102,7 +102,9 @@ if (isset($_GET['id'])) {
 						<!-- <a href="#" class="flex-c-m trans-04 p-lr-25">
 							Help & FAQs
 						</a> -->
-
+						<a href="dashboard.php" class="flex-c-m trans-04 p-lr-25">
+							Dashboard
+						</a>
 						<a href="profile.php" class="flex-c-m trans-04 p-lr-25">
 							My Account
 						</a>
@@ -153,6 +155,9 @@ if (isset($_GET['id'])) {
 								<a href="my-orders.php">My Orders</a>
 							</li>
 
+							<li>
+								<a href="rent-products.php">Rent</a>
+							</li>
 							<!-- <li>
 								<a href="dashboard.php">Dashboard</a>
 							</li> -->
@@ -160,21 +165,21 @@ if (isset($_GET['id'])) {
 						</ul>
 					</div>
 
-					 <!-- Icon header desktop -->
-					 <div class="wrap-icon-header flex-w flex-r-m">
-                        <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 active-menu" id="cartIcon">
-                            <a href="shoping-cart.php"><i class="zmdi zmdi-shopping-cart"></i></a>
-                        </div>
+					<!-- Icon header desktop -->
+					<div class="wrap-icon-header flex-w flex-r-m">
+						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 active-menu" id="cartIcon">
+							<a href="shoping-cart.php"><i class="zmdi zmdi-shopping-cart"></i></a>
+						</div>
 
-                        <div class="dropdown icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11  js-show-cart"
-                            id="wishlistDropdown">
-                            <i class="zmdi zmdi-favorite-outline" onclick="fetchPdfWishlist()"></i>
-                            <div class="dropdown-content">
-                                <a href="#" onclick="fetchWishlist()">Products</a>
-                                <a href="#" onclick="fetchPdfWishlist()">PDFs</a>
-                            </div>
-                        </div>
-                    </div>
+						<div class="dropdown icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11  js-show-cart"
+							id="wishlistDropdown">
+							<i class="zmdi zmdi-favorite-outline" onclick="fetchPdfWishlist()"></i>
+							<div class="dropdown-content">
+								<a href="#" onclick="fetchWishlist()">Products</a>
+								<a href="#" onclick="fetchPdfWishlist()">PDFs</a>
+							</div>
+						</div>
+					</div>
 
 				</nav>
 			</div>
@@ -244,7 +249,7 @@ if (isset($_GET['id'])) {
 				<li>
 					<a href="product.php">Products</a>
 				</li>
-				<li  class="active-menu">
+				<li class="active-menu">
 					<a href="shop_pdf.php">PDFs</a>
 				</li>
 
@@ -721,7 +726,7 @@ if (isset($_GET['id'])) {
 	<script src="js/add_to_cart.js"></script>
 	<script src="js/whishlist.js"></script>
 	<script src="js/login_logout.js"></script>
-    <script src="js/pdf_Wishlist.js"></script>
+	<script src="js/pdf_Wishlist.js"></script>
 
 
 

@@ -115,6 +115,9 @@ if (!isset($_SESSION["user_id"])) {
 							Help & FAQs
 						</a> -->
 
+						<a href="dashboard.php" class="flex-c-m trans-04 p-lr-25">
+							Dashboard
+						</a>
 						<a href="profile.php" class="flex-c-m trans-04 p-lr-25">
 							My Account
 						</a>
@@ -165,6 +168,9 @@ if (!isset($_SESSION["user_id"])) {
 								<a href="my-orders.php">My Orders</a>
 							</li>
 
+							<li>
+								<a href="rent-products.php">Rent</a>
+							</li>
 							<!-- <li>
 								<a href="dashboard.php">Dashboard</a>
 							</li> -->

@@ -220,6 +220,9 @@ try {
 							Help & FAQs
 						</a> -->
 
+						<a href="dashboard.php" class="flex-c-m trans-04 p-lr-25">
+							Dashboard
+						</a>
 						<a href="profile.php" class="flex-c-m trans-04 p-lr-25">
 							My Account
 						</a>
@@ -265,10 +268,13 @@ try {
 								<a href="shoping-cart.php">Cart</a>
 							</li>
 
-							<li class="active-menu">
+							<li>
 								<a href="my-orders.php">My Orders</a>
 							</li>
 
+							<li class="active-menu">
+								<a href="rent-products.php">Rent</a>
+							</li>
 							<!-- <li>
 								<a href="dashboard.php">Dashboard</a>
 							</li> -->
@@ -458,60 +464,60 @@ try {
 								'weekly' => 130, // Per week rate
 								'monthly' => 200 // Per month rate
 							];
-							
+
 							// Plan-specific discount calculations
 							$plan_discounts = [
 								'daily' => 1,    // No discount for daily
 								'weekly' => 0.9, // 10% discount for weekly
 								'monthly' => 1 // 20% discount for monthly
 							];
-							
+
 							// Calculate total days of rental
 							$rental_start = strtotime($rental['start_date']);
 							$rental_end = strtotime($rental['end_date']);
 							$days_rented = max(1, ceil(($rental_end - $rental_start) / (60 * 60 * 24)));
-							
+
 							// Calculate remaining days
 							$current_time = time();
 							$remaining_days = max(0, ceil(($rental_end - $current_time) / (60 * 60 * 24)));
-							
+
 							// Comprehensive cost calculation
 							switch ($rental['plan_type']) {
 								case 'daily':
 									// Simple daily calculation
 									$total_cost = $days_rented * $plan_rates['daily'];
 									break;
-								
+
 								case 'weekly':
 									// Calculate full weeks and remaining days
 									$weeks = floor($days_rented / 7);
 									$remaining_rental_days = $days_rented % 7;
-									
+
 									$weekly_cost = $weeks * $plan_rates['weekly'];
 									$daily_cost = $remaining_rental_days * $plan_rates['daily'];
-									
+
 									$total_cost = $weekly_cost + $daily_cost;
 									break;
-								
+
 								case 'monthly':
 									// Calculate full months and remaining days
 									$months = floor($days_rented / 30);
 									$remaining_rental_days = $days_rented % 30;
-									
+
 									$monthly_cost = $months * $plan_rates['monthly'];
 									$daily_cost = $remaining_rental_days * $plan_rates['daily'];
-									
+
 									$total_cost = $monthly_cost + $daily_cost;
 									break;
-								
+
 								default:
 									// Fallback to daily calculation
 									$total_cost = $days_rented * $plan_rates['daily'];
 							}
-							
+
 							// Apply plan-specific discount
 							$total_cost = round($total_cost * $plan_discounts[$rental['plan_type']]);
-							
+
 							// Additional context for rental duration
 							$rental_duration_details = [
 								'total_days' => $days_rented,
